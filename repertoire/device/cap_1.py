@@ -44,8 +44,8 @@ def new_device(
     poly_4 = aux_poly.reflect(poly_3, axis='y')
     cap_1.add_geometry(layer, [poly_3, poly_4])
 
-    cap_1.add_port('inside', 1j * length[0])
-    cap_1.add_port('outside', 1j * poly_1[-1].imag)
+    cap_1.add_port('inside', 1j * length[0], -90)
+    cap_1.add_port('outside', 1j * poly_1[-1].imag, 90)
 
     return cap_1
 

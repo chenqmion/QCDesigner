@@ -42,7 +42,7 @@ def new_device(angle=(0, 90, 180, 270),
             y02 = x0 + y01
 
             if num_1 == 1:
-                cross.add_port(str(angle[num_angle]), x0)
+                cross.add_port(str(angle[num_angle]), x0, angle[num_angle])
 
             x1 = (length[num_angle2] + num_1 * c_list[num_angle2]) * np.exp(1j * angle[num_angle2] * np.pi / 180)
             y11 = (a_list[num_angle2] / 2 + num_1 * b_list[num_angle2]) * np.exp(
@@ -95,13 +95,6 @@ x = new_device(angle=(0, 180, 270),
                b_list=(5, 6, 5),
                c_list=(0, 0, 0),
                layer='Nb_inv')
-
-# x = new_device(angle=(0, 180, 270),
-#               length=(130, 130, 130),
-#               a_list=(5, 10, 5),
-#               b_list=(5, 6, 5),
-#               c_list=(0, 0, 0),
-#               layer='Nb_inv')
 
 chip_1 = chip(name=device_name,
               time=time_stamp,

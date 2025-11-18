@@ -10,7 +10,7 @@ time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device
+from class_device import device, handshake
 from class_chip import chip
 import aux_poly
 
@@ -39,7 +39,8 @@ def new_device(gnd_size=[300, 300],
     cap_top_ports = cap.combine_device(cap_top, ref=0, degree=0, axis='none', port='90')
     cap.ports['top'] = cap_top_ports['90']
     # cap.ports['top_'] = cap_top_ports['270'] + (branch + protection_gap - a/2 - b)/2
-    cap.ports['top_'] = cap_top_ports['270'][0] + a[0] / 2 + (cap_size[0] + protection_gap) / 2
+    cap.ports['top_'] = handshake(x=cap_top_ports['270'].x + a[0] / 2 + (cap_size[0] + protection_gap) / 2,
+                                  angle=0)
 
     # %%
     ald_width = np.max([gnd_size[0], cap_size[0]])
@@ -53,7 +54,8 @@ def new_device(gnd_size=[300, 300],
 
     cap_gnd.add_geometry('SiO2', [poly_1], ref=1j * (cap_size[1] + 2 * protection_gap))
     # cap.ports['bottom_'] = cap.ports['top_'] + (branch + protection_gap - a/2 - b)/2 - 1j*gnd_size[1]
-    cap.ports['bottom_'] = cap_top_ports['270'][0] - 1j * gnd_size[1]
+    cap.ports['bottom_'] = handshake(x=cap_top_ports['270'].x - 1j * gnd_size[1],
+                                     angle=0)
 
     # if gnd_size[0] == 0:
     #     gnd_size[0] = gnd_size[1]

@@ -20,12 +20,12 @@ import taper_1 as taper
 
 #%% design
 def new_device(length=[10, 50],
-               a=10, b=6, a2=3, b2=2, layer='Nv_inv'):
+               a=10, b=6, a2=3, b2=2, layer='Nb_inv'):
     xy = device()
     taper_1 = taper.new_device(length=length[0], a=a, b=b, a2=a2, b2=b2, layer=layer)
     taper_ports = xy.combine_device(taper_1, ref=0, port='1')
 
-    cpw1 = cpw.cpw_straight(taper_ports['2'][0], taper_ports['2'][0] + length[1], a=a2, b=b2)
+    cpw1 = cpw.cpw_straight(taper_ports['2'].x, taper_ports['2'].x + length[1], a=a2, b=b2)
     xy.add_geometry(layer, cpw1)
 
     poly_1 = [-b2 - 1j * (a2 / 2)]
@@ -33,10 +33,10 @@ def new_device(length=[10, 50],
     poly_1.append(poly_1[-1] + b2)
     poly_1.append(poly_1[-1] - 1j * a2)
 
-    xy.add_geometry(layer, [poly_1], ref=taper_ports['2'][0] + length[1])
+    xy.add_geometry(layer, [poly_1], ref=taper_ports['2'].x + length[1])
 
-    xy.add_port('input', 0)
-    xy.add_port('output', length[0] + length[1])
+    xy.add_port('input', 0, 180)
+    xy.add_port('output', length[0] + length[1], 0)
 
     return xy
 

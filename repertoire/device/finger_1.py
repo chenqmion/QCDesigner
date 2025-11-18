@@ -67,8 +67,8 @@ def new_device(finger_width=5,
 
     cap_1.add_geometry(layer, [poly_1], ref=length[1] - 1j * (width / 2 + finger_gap[1]))
 
-    cap_1.add_port('1', 0)
-    cap_1.add_port('2', 2 * length[1] + length[0])
+    cap_1.add_port('1', 0, 180)
+    cap_1.add_port('2', 2 * length[1] + length[0], 0)
 
     return cap_1
 

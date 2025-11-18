@@ -10,7 +10,7 @@ time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device
+from class_device import device, handshake
 from class_chip import chip
 import aux_poly
 
@@ -82,39 +82,39 @@ def new_device(  # cross
 
         ports_squid_1 = xmon_1.combine_device(squid_1, ref=xmon_1.ports[squid_port],
                                               degree=int(squid_port) + 90, axis='none', port='90')
-        xmon_1.ports[squid_port] = ports_squid_1['270']
+        xmon_1.ports['squid_port'] = ports_squid_1['270']
 
     # %% z line
     if z_port != None:
         z_1 = flux.new_device(length=z_length, tip=z_tip, a=a, b=b, a2=a2, b2=b2, layer=layer)
         ports_z_1 = xmon_1.combine_device(z_1,
-                                          ref=xmon_1.ports[z_port] + z_gap * np.exp(1j * int(z_port) * np.pi / 180),
+                                          ref=xmon_1.ports[z_port].x + z_gap * np.exp(1j * int(z_port) * np.pi / 180),
                                           degree=int(z_port) + 180, axis='none', port='output')
-        xmon_1.ports[z_port] = ports_z_1['input']
+        xmon_1.ports['z_port'] = ports_z_1['input']
 
     # %% xy line
     if xy_port != None:
         xy_1 = drive.new_device(length=xy_length, a=a, b=b, a2=a2, b2=b2, layer=layer)
         ports_xy_1 = xmon_1.combine_device(xy_1,
-                                           ref=xmon_1.ports[xy_port] + xy_gap * np.exp(1j * int(xy_port) * np.pi / 180),
+                                           ref=xmon_1.ports[xy_port].x + xy_gap * np.exp(1j * int(xy_port) * np.pi / 180),
                                            degree=int(xy_port) + 180, axis='none', port='output')
-        xmon_1.ports[xy_port] = ports_xy_1['input']
+        xmon_1.ports['xy_port'] = ports_xy_1['input']
 
     # %% ro
     if ro_port != None:
         cap_1 = cap.new_device(width=cap_width, gap=cap_gap, length=cap_length, a=a, b=b, layer=layer)
-        ports_cap_1 = xmon_1.combine_device(cap_1, ref=xmon_1.ports[ro_port] + ro_gap * np.exp(
-            1j * int(ro_port) * np.pi / 180),
+        ports_cap_1 = xmon_1.combine_device(cap_1,
+                                            ref=xmon_1.ports[ro_port].x + ro_gap * np.exp(1j * int(ro_port) * np.pi / 180),
                                             degree=int(ro_port) - 90, axis='none', port='inside')
-
+        print(ports_cap_1)
         lambda4_1 = lambda4.new_device(length=ro_length, height=ro_height, width=ro_width, mode=ro_mode,
                                        a=a, b=b, r=r, d_rad=d_rad, layer=layer)
 
         ports_lambda4_1 = xmon_1.combine_device(lambda4_1, ref=ports_cap_1['outside'], degree=int(ro_port) - 90,
                                                 axis='none', port='1')
 
-        ref_port = ports_cap_1['outside'] - ro_width[0] / 2 + 1j * (ro_height[0] + a / 2 + b)
-        xmon_1.ports[ro_port] = ref_port
+        ref_port = ports_cap_1['outside'].x - ro_width[0] / 2 + 1j * (ro_height[0] + a / 2 + b)
+        xmon_1.ports['ro_port'] = handshake(x=ref_port, angle=90)
 
     return xmon_1
 

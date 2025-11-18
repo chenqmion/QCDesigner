@@ -10,7 +10,7 @@ time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device
+from class_device import device, handshake
 from class_chip import chip
 import aux_poly
 
@@ -38,9 +38,10 @@ def new_device(length=2500, height=(1000, 200), width=(500, 300), mode='incompac
 
     new_ports = cpw_1.combine_device(cpw_2, ref=path[-1], degree=-90)
 
-    cpw_1.ports['1'] = 0
+    print(cpw_1.ports)
+    print(new_ports)
     cpw_1.ports['2'] = new_ports['2']
-    cpw_1.ports['3'] = - width[0] / 2 + 1j * (height[0])
+    cpw_1.ports['3'] = handshake(x=- width[0] / 2 + 1j * (height[0]), angle=90)
 
     return cpw_1
 

@@ -81,11 +81,11 @@ def new_device(zone=(22, 10),
         poly_3 = aux_poly.subtract(poly_3, poly_4)[0]
 
     JJ.add_geometry('Nb_inv', [poly_3])
-    JJ.add_port('270', 0)
-    JJ.add_port('90', 1j * zone[1])
+    JJ.add_port('270', 0, 270)
+    JJ.add_port('90', 1j * zone[1], 90)
 
-    JJ.add_port('0', zone[0] / 2 + 1j * zone[1] / 2)
-    JJ.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2)
+    JJ.add_port('0', zone[0] / 2 + 1j * zone[1] / 2, 0)
+    JJ.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2, 180)
 
     # JJ
     ref_list = []

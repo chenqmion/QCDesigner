@@ -47,9 +47,6 @@ def new_device(
 
     cpw_1 = cpw.new_device(path, a=a, b=b, r=r, d_rad=d_rad, layer=layer)
 
-    cpw_1.add_port('1', path[0])
-    cpw_1.add_port('2', path[-1])
-
     return cpw_1
 
 #%% example

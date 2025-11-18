@@ -49,11 +49,11 @@ def new_device(zone=(10, 10), squid_height=2, squid_width=6,
     poly_4 = aux_poly.subtract(poly_4, poly_2)[0]
 
     SQUID.add_geometry('Nb_inv', [poly_4])
-    SQUID.add_port('270', 0)
-    SQUID.add_port('90', 1j * zone[1])
+    SQUID.add_port('270', 0, 270)
+    SQUID.add_port('90', 1j * zone[1], 90)
 
-    SQUID.add_port('0', zone[0] / 2 + 1j * zone[1] / 2)
-    SQUID.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2)
+    SQUID.add_port('0', zone[0] / 2 + 1j * zone[1] / 2, 0)
+    SQUID.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2, 180)
 
     # JJ
     poly_1 = [-(squid_width / 2 + nanowire_width / 2 + nanowire_extension) - 1j * nanowire_width / 2]

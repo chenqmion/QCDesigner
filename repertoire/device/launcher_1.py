@@ -38,8 +38,8 @@ def new_device(pad=400,
     taper_1 = taper.new_device(length=taper_length, a=pad, b=b2, a2=a, b2=b)
     new_ports = launcher_1.combine_device(taper_1, ref=pad + gap, degree=0, port='1')
 
-    launcher_1.add_port('1', 0)
-    launcher_1.add_port('2', new_ports['2'][0])
+    launcher_1.add_port('1', 0, 180)
+    launcher_1.add_port('2', new_ports['2'].x, 0)
 
     return launcher_1
 

@@ -81,8 +81,8 @@ def new_device(length=50,
     poly_2 = aux_poly.reflect(poly_1, axis='x', value=0)
     taper.add_geometry(layer, [poly_1, poly_2])
 
-    taper.add_port('1', 0)
-    taper.add_port('2', length)
+    taper.add_port('1', 0, 180)
+    taper.add_port('2', length, 0)
 
     return taper
 

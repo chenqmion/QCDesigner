@@ -89,11 +89,10 @@ def new_device(
     path2.append(path[-1])
 
     cpw_1.add_geometry(layer, cpw_geometry)
-    cpw_1.add_port('1', path[0])
-    cpw_1.add_port('2', path[-1])
+    cpw_1.add_port('1', path[0], np.angle(path[0]-path[1])*180/np.pi)
+    cpw_1.add_port('2', path[-1], np.angle(path[-1]-path[-2])*180/np.pi)
 
     return cpw_1
-
 
 def cpw_straight(pt_start, pt_stop, a=10, b=6):
     d0 = pt_stop - pt_start
@@ -144,22 +143,9 @@ def cpw_curve(pt_start, pt_ori, rad, a=10, b=6, d_rad=np.pi / 36):
 
     return cpw_geometry
 
-
-path = [0.00000000e+00 + 0.j, 1.78019263e-14 + 290.72751902j,
-        1.94791192e-14 + 318.11815752j, -4.61655412e+01 + 347.6093615j,
-        -4.61655412e+01 + 375.j, -4.61655412e+01 + 402.3906385j,
-        2.64451358e-14 + 431.88184248j, 2.81223287e-14 + 459.27248098j,
-        4.59242550e-14 + 750.j]
-
-# import matplotlib.pyplot as plt
-#
-# plt.figure()
-# for x in path:
-#     plt.scatter(x.real, x.imag)
-# plt.savefig('x.pdf')
-# # plt.show()
-
 #%% example
+path = [0.00000000e+00 + 0.j, 100+100j, 200+100j, 300+0j]
+
 x = new_device(path=path)
 
 chip_1 = chip(name=device_name,

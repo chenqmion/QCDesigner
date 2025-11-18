@@ -76,9 +76,6 @@ def new_device(length=1850, width=200, mode='compact',
     cpw_1 = cpw.new_device(path, a=a, b=b, r=r, d_rad=d_rad, layer=layer)
     cpw_1.add_geometry(layer, geometry_1)
 
-    cpw_1.add_port('1', path[0])
-    cpw_1.add_port('2', end_pt)
-
     return cpw_1
 
 #%% example
