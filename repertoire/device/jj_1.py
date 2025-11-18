@@ -1,14 +1,13 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 
 sys.path.append('../')
 from class_device import device
-from class_chip import chip
 
 import aux_poly
 
@@ -17,10 +16,9 @@ import aux_poly
 def new_device(zone=(24, 8),
                contact_gap=0.5, protection_gap=1.5,
                nanowire_width=0.2, nanowire_extension=1,
-               ghost = [0.2, 0.8],
+               ghost=[0.2, 0.8],
                w_electrode=3):
-
-    nanowire_height = zone[1]/2
+    nanowire_height = zone[1] / 2
 
     JJ = device()
 
@@ -51,8 +49,8 @@ def new_device(zone=(24, 8),
     JJ.add_port('270', 0)
     JJ.add_port('90', 1j * zone[1])
 
-    JJ.add_port('0', zone[0]/2 + 1j*zone[1]/2)
-    JJ.add_port('180', -zone[0]/2 + 1j*zone[1]/2)
+    JJ.add_port('0', zone[0] / 2 + 1j * zone[1] / 2)
+    JJ.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2)
 
     # JJ
     poly_1 = [-width_gap / 2 - nanowire_extension - 1j * nanowire_width / 2]
@@ -72,8 +70,8 @@ def new_device(zone=(24, 8),
     JJ.add_geometry('JJ1', [poly_2])
 
     # ghost
-    poly_1_ghost = [- ghost[0] - 1j*(nanowire_width + ghost[0])/2]
-    poly_1_ghost.append(poly_1_ghost[-1] + 1j*(nanowire_width + ghost[0]))
+    poly_1_ghost = [- ghost[0] - 1j * (nanowire_width + ghost[0]) / 2]
+    poly_1_ghost.append(poly_1_ghost[-1] + 1j * (nanowire_width + ghost[0]))
     poly_1_ghost.append(poly_1_ghost[-1] + ghost[0] + ghost[1])
     poly_1_ghost.append(poly_1_ghost[-1] - 1j * (nanowire_width + ghost[0]))
 
@@ -81,17 +79,18 @@ def new_device(zone=(24, 8),
     ref_2 = -width_gap / 2 - nanowire_extension + 1j * nanowire_height
 
     JJ.add_geometry('Ghost1', [poly_1_ghost],
-                    ref= ref_1)
+                    ref=ref_1)
     JJ.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=180)],
-                    ref= ref_2)
+                    ref=ref_2)
 
     ref_3 = width_gap / 2 - contact_gap - nanowire_width / 2 + 1j * (height_1 + nanowire_extension)
-    ref_4 = width_gap / 2 - contact_gap - nanowire_width / 2 + 1j * (nanowire_height - nanowire_width / 2 - nanowire_extension)
+    ref_4 = width_gap / 2 - contact_gap - nanowire_width / 2 + 1j * (
+                nanowire_height - nanowire_width / 2 - nanowire_extension)
 
     JJ.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=90)],
-                    ref= ref_3)
+                    ref=ref_3)
     JJ.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=270)],
-                    ref= ref_4)
+                    ref=ref_4)
 
     # patch
     overlap = nanowire_extension + contact_gap
@@ -105,15 +104,14 @@ def new_device(zone=(24, 8),
 
     height_1 = nanowire_height + nanowire_width / 2 + protection_gap
 
-    poly_2_patch = [ref_3 - (nanowire_width / 2 + contact_gap) + 1j*contact_gap]
-    poly_2_patch.append((width_gap / 2 + overlap) + 1j*poly_2_patch[-1].imag)
-    poly_2_patch.append(poly_2_patch[-1] - 1j*overlap)
-    poly_2_patch.append(ref_3.real - (nanowire_width / 2 + contact_gap) + 1j*poly_2_patch[-1].imag)
+    poly_2_patch = [ref_3 - (nanowire_width / 2 + contact_gap) + 1j * contact_gap]
+    poly_2_patch.append((width_gap / 2 + overlap) + 1j * poly_2_patch[-1].imag)
+    poly_2_patch.append(poly_2_patch[-1] - 1j * overlap)
+    poly_2_patch.append(ref_3.real - (nanowire_width / 2 + contact_gap) + 1j * poly_2_patch[-1].imag)
 
     JJ.add_geometry('Patch', [poly_2_patch])
 
     return JJ
-
 
 # x = new_device()
 #

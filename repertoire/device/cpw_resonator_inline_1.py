@@ -1,7 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -13,8 +13,8 @@ import cpw_1 as cpw
 
 
 def new_device(pt_start=0, pt_stop=None,
-                   length=1000, width=0, N=0,
-                   a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
+               length=1000, width=0, N=0,
+               a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
     if pt_stop == None:
         ph_x = 0
     else:

@@ -97,16 +97,16 @@ def new_chip(name='test',
                               90]
     else:
         dic_launcher['--'] = [((chip_size[0] - gnd_size[0]) / 2 + launcher_arrange[1]) + 1j * (
-                    (chip_size[0] - gnd_size[0]) / 2 + launcher_arrange[1]), 45]
+                (chip_size[0] - gnd_size[0]) / 2 + launcher_arrange[1]), 45]
         dic_launcher['-0'] = [((chip_size[0] - gnd_size[0]) / 2) + 1j * (chip_size[1] / 2), 0]
         dic_launcher['-+'] = [((chip_size[0] - gnd_size[0]) / 2 + launcher_arrange[1]) + 1j * (
-                    (chip_size[1] + gnd_size[1]) / 2 - launcher_arrange[1]), -45]
+                (chip_size[1] + gnd_size[1]) / 2 - launcher_arrange[1]), -45]
         dic_launcher['0+'] = [(chip_size[0] / 2) + 1j * ((chip_size[0] + gnd_size[0]) / 2), -90]
         dic_launcher['++'] = [((chip_size[0] + gnd_size[0]) / 2 - launcher_arrange[1]) + 1j * (
-                    (chip_size[0] + gnd_size[0]) / 2 - launcher_arrange[1]), -135]
+                (chip_size[0] + gnd_size[0]) / 2 - launcher_arrange[1]), -135]
         dic_launcher['+0'] = [((chip_size[0] + gnd_size[0]) / 2) + 1j * (chip_size[1] / 2), 180]
         dic_launcher['+-'] = [((chip_size[0] + gnd_size[0]) / 2 - launcher_arrange[1]) + 1j * (
-                    (chip_size[1] - gnd_size[1]) / 2 + launcher_arrange[1]), 135]
+                (chip_size[1] - gnd_size[1]) / 2 + launcher_arrange[1]), 135]
         dic_launcher['0-'] = [(chip_size[0] / 2) + 1j * ((chip_size[1] - gnd_size[1]) / 2), 90]
 
     launcher_ports = {}
@@ -175,7 +175,7 @@ def new_edge(chip_size=(10e3, 10e3),
         poly_3.append(1000 - 100j)
 
         poly_3 = np.array(poly_3) + ((chip_size[0] - gnd_size[0]) / 2 - 500) + 1j * (
-                    (chip_size[0] - gnd_size[0]) / 2 - 500)
+                (chip_size[0] - gnd_size[0]) / 2 - 500)
         poly_1 = geo.poly_hole(poly_1, poly_3)
 
     edge.add_geometry('Nb_inv', [poly_1])

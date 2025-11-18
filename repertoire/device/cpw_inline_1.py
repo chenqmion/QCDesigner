@@ -1,7 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -17,29 +17,28 @@ def new_device(
         pt_stop=1000,
         length=3000,
         N=0,
-        flip = False,
-        zero_pre = False,
+        flip=False,
+        zero_pre=False,
         a=10,
         b=6,
         r=50,
         d_rad=np.pi / 36,
         layer='Nb_inv'
-    ):
-
+):
     dx = np.abs(pt_stop - pt_start)
     ph_x = np.angle(pt_stop - pt_start)
 
     if (N == 0):
-        N = int(np.floor(dx/(2*r)) - 1)
+        N = int(np.floor(dx / (2 * r)) - 1)
         length_wiggle = length - (dx - 2 * r * (N + 1))
-        width = (length_wiggle + 2 * r - np.pi * r)/N + 2 * r - np.pi * r
-        while (width < 4*r) and (N >= 1):
+        width = (length_wiggle + 2 * r - np.pi * r) / N + 2 * r - np.pi * r
+        while (width < 4 * r) and (N >= 1):
             N += -1
             length_wiggle = length - (dx - 2 * r * (N + 1))
             width = (length_wiggle + 2 * r - np.pi * r) / N + 2 * r - np.pi * r
 
-    length_wiggle = length - (dx - 2*r*(N+1))
-    width = (length_wiggle + 2 * r - np.pi * r)/N + 2 * r - np.pi * r
+    length_wiggle = length - (dx - 2 * r * (N + 1))
+    width = (length_wiggle + 2 * r - np.pi * r) / N + 2 * r - np.pi * r
 
     if zero_pre:
         pre = r

@@ -1,24 +1,23 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 
 sys.path.append('../')
 from class_device import device
-from class_chip import chip
 
 import aux_poly
 
 
 def new_device(angle=(0, 90, 180, 270),
-              length=(130, 130, 130, 130),
-              a_list=(8, 8, 8, 8),
-              b_list=(8, 8, 8, 8),
-              c_list=(8, 8, 8, 8),
-              layer='Nb_inv'):
+               length=(130, 130, 130, 130),
+               a_list=(8, 8, 8, 8),
+               b_list=(8, 8, 8, 8),
+               c_list=(8, 8, 8, 8),
+               layer='Nb_inv'):
     cross = device()
 
     idx_angle = np.argsort(angle)
@@ -86,12 +85,13 @@ def new_device(angle=(0, 90, 180, 270),
 
     return cross
 
+
 x = new_device(angle=(0, 180, 270),
-              length=(100, 100, 100),
-              a_list=(5, 10, 5),
-              b_list=(5, 6, 5),
-              c_list=(0, 0, 0),
-              layer='Nb_inv')
+               length=(100, 100, 100),
+               a_list=(5, 10, 5),
+               b_list=(5, 6, 5),
+               c_list=(0, 0, 0),
+               layer='Nb_inv')
 
 # x = new_device(angle=(0, 180, 270),
 #               length=(130, 130, 130),

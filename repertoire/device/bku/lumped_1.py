@@ -3,8 +3,6 @@ import sys
 sys.path.append('../')
 from geometry_class import *
 
-from junction_1 import *
-
 
 # %% capacitor
 def capacitor_fishbone(input={'a': 10, 'b': 6, 'l': 0, 'ref_y': 0},

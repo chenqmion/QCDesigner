@@ -1,7 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -11,9 +11,9 @@ from class_chip import chip
 
 import cpw_1 as cpw
 
-def new_device(length=1850, width=200, mode='compact',
-                    a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
 
+def new_device(length=1850, width=200, mode='compact',
+               a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
     N = int(np.floor(length / ((width - 2 * r) + np.pi * r)))
     length_wiggle = ((width - 2 * r) + np.pi * r) * N
     pre = 0
@@ -74,6 +74,7 @@ def new_device(length=1850, width=200, mode='compact',
     cpw_1.add_port('2', end_pt)
 
     return cpw_1
+
 
 x = new_device()
 

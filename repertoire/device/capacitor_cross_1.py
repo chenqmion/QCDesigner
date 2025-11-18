@@ -1,8 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import scipy.constants as const
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -11,37 +10,33 @@ sys.path.append('../')
 from class_device import device
 from class_chip import chip
 
-import cpw_1 as cpw
-import taper_1 as taper
-import aux_poly
-
 import cross_1 as cross
 
-def new_device(gnd_size = [300, 300],
-               cap_size = [10,10],
-               protection_gap = 10,
+
+def new_device(gnd_size=[300, 300],
+               cap_size=[10, 10],
+               protection_gap=10,
                a=[5, 10],
                b=[3, 6],
                layer='Nb_inv'):
-
     cap = device()
 
-    #%%
-    branch = cap_size[0] + a[0]/2 + protection_gap
+    # %%
+    branch = cap_size[0] + a[0] / 2 + protection_gap
 
     cap_top = cross.new_device(angle=(0, 90, 270),
-               length=(branch, cap_size[1]/2+protection_gap, cap_size[1]/2),
-               a_list=(cap_size[1], a[0], a[0]),
-               b_list=(protection_gap, b[0], b[0]),
-               c_list=(protection_gap, 0, protection_gap),
-               layer=layer)
+                               length=(branch, cap_size[1] / 2 + protection_gap, cap_size[1] / 2),
+                               a_list=(cap_size[1], a[0], a[0]),
+                               b_list=(protection_gap, b[0], b[0]),
+                               c_list=(protection_gap, 0, protection_gap),
+                               layer=layer)
 
     cap_top_ports = cap.combine_device(cap_top, ref=0, degree=0, axis='none', port='90')
     cap.ports['top'] = cap_top_ports['90']
     # cap.ports['top_'] = cap_top_ports['270'] + (branch + protection_gap - a/2 - b)/2
-    cap.ports['top_'] = cap_top_ports['270'] + a[0]/2 + (cap_size[0] + protection_gap)/2
+    cap.ports['top_'] = cap_top_ports['270'] + a[0] / 2 + (cap_size[0] + protection_gap) / 2
 
-    #%%
+    # %%
     ald_width = np.max([gnd_size[0], cap_size[0]])
 
     cap_gnd = device()
@@ -64,30 +59,31 @@ def new_device(gnd_size = [300, 300],
     poly_2.append(poly_2[-1] + 1j * gnd_size[1])
 
     poly_3 = [-cap_size[0] / 2]
-    poly_3.append(poly_3[-1] + 1j*(cap_size[1] + protection_gap*3/2))
+    poly_3.append(poly_3[-1] + 1j * (cap_size[1] + protection_gap * 3 / 2))
     poly_3.append(poly_3[-1] + cap_size[0])
-    poly_3.append(poly_3[-1] - 1j*(cap_size[1] + protection_gap*3/2))
+    poly_3.append(poly_3[-1] - 1j * (cap_size[1] + protection_gap * 3 / 2))
 
-    poly_4 = [pt - 1j*(cap_size[1] + protection_gap*3/2 + gnd_size[1]) for pt in poly_3]
+    poly_4 = [pt - 1j * (cap_size[1] + protection_gap * 3 / 2 + gnd_size[1]) for pt in poly_3]
 
     cap_gnd.add_geometry('Patch', [poly_2, poly_3, poly_4], ref=0)
 
     cap_gnd_ports = cap.combine_device(cap_gnd, ref=cap.ports['top_'], degree=0, axis='none')
 
-    #%%
+    # %%
     cap_bottom = cross.new_device(angle=(0, 90, 270),
-                               length=(branch, cap_size[1] / 2 + protection_gap, cap_size[1] / 2),
-                               a_list=(cap_size[1], a[1], a[1]),
-                               b_list=(protection_gap, b[1], b[1]),
-                               c_list=(protection_gap, 0, protection_gap),
-                               layer=layer)
+                                  length=(branch, cap_size[1] / 2 + protection_gap, cap_size[1] / 2),
+                                  a_list=(cap_size[1], a[1], a[1]),
+                                  b_list=(protection_gap, b[1], b[1]),
+                                  c_list=(protection_gap, 0, protection_gap),
+                                  layer=layer)
 
     cap_bottom_ports = cap.combine_device(cap_bottom, ref=cap.ports['bottom_'], degree=0, axis='x', port='270')
     cap.ports['bottom'] = cap_bottom_ports['90']
 
     return cap
 
-x = new_device(gnd_size = [0, 5])
+
+x = new_device(gnd_size=[0, 5])
 
 chip_1 = chip(name='capacitor_cross',
               time=time_stamp,

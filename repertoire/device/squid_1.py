@@ -1,7 +1,8 @@
+import datetime
 import sys
+
 import numpy as np
 
-import datetime
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 
@@ -11,14 +12,14 @@ from class_chip import chip
 
 import aux_poly
 
+
 # %% JJ
-def new_device(zone=(10, 10), squid_height=2, squid_width = 6,
+def new_device(zone=(10, 10), squid_height=2, squid_width=6,
                contact_gap=0.5, protection_gap=1.5,
                nanowire_width=0.2, nanowire_extension=1,
-               ghost = [0.2, 0.8],
+               ghost=[0.2, 0.8],
                w_electrode=3):
-
-    nanowire_height = zone[1] / 2 + squid_height/2 - (nanowire_width/2+contact_gap)/2
+    nanowire_height = zone[1] / 2 + squid_height / 2 - (nanowire_width / 2 + contact_gap) / 2
 
     SQUID = device()
 
@@ -54,9 +55,9 @@ def new_device(zone=(10, 10), squid_height=2, squid_width = 6,
     SQUID.add_port('180', -zone[0] / 2 + 1j * zone[1] / 2)
 
     # JJ
-    poly_1 = [-(squid_width / 2 + nanowire_width/2 + nanowire_extension) - 1j * nanowire_width / 2]
+    poly_1 = [-(squid_width / 2 + nanowire_width / 2 + nanowire_extension) - 1j * nanowire_width / 2]
     poly_1.append(poly_1[-1] + 1j * nanowire_width)
-    poly_1.append((squid_width / 2 + nanowire_width/2 + nanowire_extension) + 1j * poly_1[-1].imag)
+    poly_1.append((squid_width / 2 + nanowire_width / 2 + nanowire_extension) + 1j * poly_1[-1].imag)
     poly_1.append(poly_1[-1] - 1j * nanowire_width)
     poly_1 = np.array(poly_1) + 1j * nanowire_height
 
@@ -77,24 +78,24 @@ def new_device(zone=(10, 10), squid_height=2, squid_width = 6,
     poly_1_ghost.append(poly_1_ghost[-1] + ghost[0] + ghost[1])
     poly_1_ghost.append(poly_1_ghost[-1] - 1j * (nanowire_width + ghost[0]))
 
-    ref_1 = (squid_width / 2 + nanowire_width/2 + nanowire_extension) + 1j * nanowire_height
-    ref_2 = -(squid_width / 2 + nanowire_width/2 + nanowire_extension) + 1j * nanowire_height
+    ref_1 = (squid_width / 2 + nanowire_width / 2 + nanowire_extension) + 1j * nanowire_height
+    ref_2 = -(squid_width / 2 + nanowire_width / 2 + nanowire_extension) + 1j * nanowire_height
 
     SQUID.add_geometry('Ghost1', [poly_1_ghost],
-                    ref=ref_1)
+                       ref=ref_1)
     SQUID.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=180)],
-                    ref=ref_2)
+                       ref=ref_2)
 
-    ref_3 = squid_width / 2 + 1j*(height_1 + nanowire_extension)
-    ref_4 = -squid_width / 2 + 1j*(height_1 + nanowire_extension)
+    ref_3 = squid_width / 2 + 1j * (height_1 + nanowire_extension)
+    ref_4 = -squid_width / 2 + 1j * (height_1 + nanowire_extension)
 
     SQUID.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=90)],
-                     ref=ref_3)
+                       ref=ref_3)
     SQUID.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=90)],
-                     ref=ref_4)
+                       ref=ref_4)
 
-    ref_5 = squid_width / 2 + 1j*(height_2 - nanowire_extension)
-    ref_6 = -squid_width / 2 + 1j*(height_2 - nanowire_extension)
+    ref_5 = squid_width / 2 + 1j * (height_2 - nanowire_extension)
+    ref_6 = -squid_width / 2 + 1j * (height_2 - nanowire_extension)
 
     SQUID.add_geometry('Ghost1', [aux_poly.rotate(poly_1_ghost, degree=270)],
                        ref=ref_5)
@@ -104,21 +105,22 @@ def new_device(zone=(10, 10), squid_height=2, squid_width = 6,
     # patch
     overlap = nanowire_extension + contact_gap
 
-    poly_1_patch = [-overlap/2 + 1j * (height_1 + overlap)]
-    poly_1_patch.append(poly_1_patch[-1].real + 1j * (nanowire_height - nanowire_width/2 - contact_gap))
+    poly_1_patch = [-overlap / 2 + 1j * (height_1 + overlap)]
+    poly_1_patch.append(poly_1_patch[-1].real + 1j * (nanowire_height - nanowire_width / 2 - contact_gap))
     poly_1_patch.append(poly_1_patch[-1] + overlap)
     poly_1_patch.append(poly_1_patch[-1].real + 1j * (height_1 + overlap))
 
     SQUID.add_geometry('Patch', [poly_1_patch])
 
-    poly_2_patch = [- (squid_width/2 + nanowire_width / 2 + contact_gap) + 1j * (height_2 - overlap)]
-    poly_2_patch.append(1j*poly_2_patch[-1].imag + (-width_2 / 2 + overlap))
+    poly_2_patch = [- (squid_width / 2 + nanowire_width / 2 + contact_gap) + 1j * (height_2 - overlap)]
+    poly_2_patch.append(1j * poly_2_patch[-1].imag + (-width_2 / 2 + overlap))
     poly_2_patch.append(poly_2_patch[-1] + 1j * overlap)
-    poly_2_patch.append(1j*poly_2_patch[-1].imag - (squid_width/2 + nanowire_width / 2 + contact_gap))
+    poly_2_patch.append(1j * poly_2_patch[-1].imag - (squid_width / 2 + nanowire_width / 2 + contact_gap))
 
     SQUID.add_geometry('Patch', [poly_2_patch, aux_poly.reflect(poly_2_patch, axis='y')])
 
     return SQUID
+
 
 x = new_device()
 

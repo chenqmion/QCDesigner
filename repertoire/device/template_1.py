@@ -1,8 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -13,6 +12,7 @@ from class_chip import chip
 import aux_marker
 import aux_poly
 import launcher_1 as launcher
+
 
 def new_device(name='template',
                time='250611',
@@ -30,11 +30,10 @@ def new_device(name='template',
                # general
                a=10, b=6
                ):
-
     chip_1 = chip(name=name, time=time, logo=logo,
                   die_size=die_size, chip_size=chip_size, trap_size=trap_size)
 
-    #%% base
+    # %% base
     poly_1 = []
     poly_1.append(0)
     poly_1.append(1j * chip_size[1])
@@ -59,7 +58,7 @@ def new_device(name='template',
 
     chip_1.add_geometry('remarks', [poly_1])
 
-    #%% notes
+    # %% notes
     # position_list = [chip_size[0]/3 + 0.4e3 * 1j,
     #                  chip_size[0]/3 + 1j*(chip_size[1] - 0.4e3),
     #                  chip_size[0]*2/3 + 1j*(chip_size[1] - 0.4e3)]
@@ -78,7 +77,7 @@ def new_device(name='template',
     position_2 = [0, 1j * chip_size[1], (chip_size[0] + 1j * chip_size[1]), chip_size[0]]
     for num_2 in range(4):
         chip_1.add_geometry('remarks', [poly_2], ref=position_2[num_2], degree=-90 * num_2,
-                                               axis='none', ref_port=0)
+                            axis='none', ref_port=0)
 
     launcher_1 = launcher.new_device(pad=pad,
                                      gap=gap,
@@ -99,10 +98,11 @@ def new_device(name='template',
 
     for launcher_name in launchers:
         idx_1 = names_1.index(launcher_name)
-        xx=chip_1.combine_device(launcher_1, ref=position_1[idx_1], degree=degree_1[idx_1], axis='none',
-                          port='1')
+        xx = chip_1.combine_device(launcher_1, ref=position_1[idx_1], degree=degree_1[idx_1], axis='none',
+                                   port='1')
 
     return chip_1
+
 
 x = new_device(time=time_stamp)
 x.gen_gds(marker=True, flux_trap=True, set_zero=False)

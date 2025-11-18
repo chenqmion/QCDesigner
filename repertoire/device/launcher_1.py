@@ -1,7 +1,5 @@
-import sys
-
-import numpy as np
 import datetime
+import sys
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -12,6 +10,7 @@ from class_device import device
 import aux_poly
 
 import taper_1 as taper
+
 
 def new_device(pad=400,
                gap=240,

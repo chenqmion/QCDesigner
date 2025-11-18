@@ -1,8 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
-
 from scipy.optimize import root
 
 today = str(datetime.date.today()).split('-')
@@ -13,19 +12,19 @@ from class_chip import chip
 
 import cpw_1 as cpw
 
+
 def new_device(
         pt_start=0,
         pt_stop=1000,
         length=3000,
         N=0,
         flip=False,
-        zero_pre = False,
+        zero_pre=False,
         a=10,
         b=6,
         r=50,
         d_rad=np.pi / 36,
         layer='Nb_inv'):
-
     dx = np.abs(pt_stop - pt_start)
     ph_x = np.angle(pt_stop - pt_start)
 
@@ -36,7 +35,7 @@ def new_device(
 
     if N == 0:
         N = int(np.floor(dx / (2 * r)) - 1)
-        N = int(2 * np.ceil(N/2) - 1)
+        N = int(2 * np.ceil(N / 2) - 1)
 
         length_wiggle = length - (dx - 2 * r * (N + 1))
         width = length_wiggle / (N + 1) + 2 * r - np.pi * r
@@ -51,20 +50,20 @@ def new_device(
 
         if (width < 2 * r):
             N = int(np.floor(dx / (2 * r))) - 1
-            N = int(2 * np.ceil(N/2) - 1)
+            N = int(2 * np.ceil(N / 2) - 1)
 
             res = root(func, 0, args=(N,))
             theta = np.squeeze(res.x)
 
             N_new = int(np.floor(dx / (2 * r * np.sin(theta)))) - 1 if (theta != 0) else 1
-            N_new = int(2 * np.ceil(N_new/2) - 1)
+            N_new = int(2 * np.ceil(N_new / 2) - 1)
 
             while N_new != N:
                 N = np.copy(N_new)
                 res = root(func, 0, args=(N,))
                 theta = np.squeeze(res.x)
 
-                if theta <= 0.1 * np.pi/180:
+                if theta <= 0.1 * np.pi / 180:
                     N_new = 1
                     N = 1
                 else:
@@ -95,24 +94,24 @@ def new_device(
         pre = (length - length_wiggle) / 2
         post = (length - length_wiggle) / 2
 
-    x1 = r * np.tan(theta/2)
-    x2 = 2*r*np.sin(theta) - 2*x1
-    if (theta == np.pi/2):
+    x1 = r * np.tan(theta / 2)
+    x2 = 2 * r * np.sin(theta) - 2 * x1
+    if (theta == np.pi / 2):
         y2 = width
     else:
         y2 = r - r * (2 * np.cos(theta) - 1)
 
     # %%
     path = [0, pre]
-    for num_1 in range(N+1):
+    for num_1 in range(N + 1):
         if num_1 % 2 == 0:
             path.append(path[-1] + x1)
             # path.append(path[-1] + 1j * width)
-            path.append(path[-1] + (x2 + 1j*y2))
+            path.append(path[-1] + (x2 + 1j * y2))
             path.append(path[-1] + x1)
         else:
             path.append(path[-1] + x1)
-            path.append(path[-1] + (x2 - 1j*y2))
+            path.append(path[-1] + (x2 - 1j * y2))
             # path.append(path[-1] - 1j * width)
             path.append(path[-1] + x1)
 
@@ -129,6 +128,7 @@ def new_device(
     cpw_1.add_port('2', path[-1])
 
     return cpw_1
+
 
 x = new_device(pt_start=0, pt_stop=1050,
                length=1050)

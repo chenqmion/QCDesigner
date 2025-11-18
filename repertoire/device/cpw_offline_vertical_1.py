@@ -1,9 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
-
-from scipy.optimize import root
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -12,6 +10,7 @@ sys.path.append('../')
 from class_chip import chip
 
 import cpw_1 as cpw
+
 
 def new_device(
         length=3000,
@@ -22,21 +21,20 @@ def new_device(
         r=50,
         d_rad=np.pi / 36,
         layer='Nb_inv'):
-
     length = np.round(length, 3)
-    width = (length + np.pi*r) / (N+1) + 2 * r - np.pi * r
+    width = (length + np.pi * r) / (N + 1) + 2 * r - np.pi * r
 
     # %%
-    path = [0, 1j*(width-2*r)]
+    path = [0, 1j * (width - 2 * r)]
     for num_1 in range(N):
         if num_1 % 2 == 0:
             path.append(path[-1] + 1j * r)
-            path.append(path[-1] + 2*r)
-            path.append(path[-1] - 1j * (width-r))
+            path.append(path[-1] + 2 * r)
+            path.append(path[-1] - 1j * (width - r))
         else:
             path.append(path[-1] - 1j * r)
-            path.append(path[-1] + 2*r)
-            path.append(path[-1] + 1j * (width-r))
+            path.append(path[-1] + 2 * r)
+            path.append(path[-1] + 1j * (width - r))
 
     if flip:
         path = np.conjugate(path)
@@ -47,6 +45,7 @@ def new_device(
     cpw_1.add_port('2', path[-1])
 
     return cpw_1
+
 
 x = new_device(length=1050)
 

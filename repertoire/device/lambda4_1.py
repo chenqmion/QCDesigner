@@ -1,7 +1,7 @@
+import datetime
 import sys
 
 import numpy as np
-import datetime
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -12,8 +12,9 @@ from class_chip import chip
 import cpw_1 as cpw
 import cpw_resonator_offline_1 as cpw_resonator_offline
 
+
 def new_device(length=2500, height=(1000, 200), width=(500, 300), mode='incompact',
-                        a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
+               a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
     # PRL 111, 080502 (2013)
 
     path = [0]
@@ -26,16 +27,17 @@ def new_device(length=2500, height=(1000, 200), width=(500, 300), mode='incompac
     length_1 = (height[0] + height[1] - 2 * r) + (width[0] - 2 * r) + np.pi * r
     length_2 = length - length_1
 
-    cpw_2 = cpw_resonator_offline.new_device(length=length_2, width=(width[0]-width[1]), mode=mode,
-                                      a=a, b=b, r=r, d_rad=d_rad, layer=layer)
+    cpw_2 = cpw_resonator_offline.new_device(length=length_2, width=(width[0] - width[1]), mode=mode,
+                                             a=a, b=b, r=r, d_rad=d_rad, layer=layer)
 
     new_ports = cpw_1.combine_device(cpw_2, ref=path[-1], degree=-90)
 
     cpw_1.ports['1'] = 0
     cpw_1.ports['2'] = new_ports['2']
-    cpw_1.ports['3'] = - width[0]/2 + 1j * (height[0])
+    cpw_1.ports['3'] = - width[0] / 2 + 1j * (height[0])
 
     return cpw_1
+
 
 x = new_device()
 
