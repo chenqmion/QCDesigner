@@ -1,18 +1,23 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
-from scipy.optimize import root
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
+from class_device import device
 from class_chip import chip
+import aux_poly
 
+#%% dependence
 import cpw_1 as cpw
 
-
+#%% design
 def new_device(
         pt_start=0,
         pt_stop=1000,
@@ -52,7 +57,7 @@ def new_device(
             N = int(np.floor(dx / (2 * r))) - 1
             N = int(2 * np.ceil(N / 2) - 1)
 
-            res = root(func, 0, args=(N,))
+            res = sci.optimize.root(func, 0, args=(N,))
             theta = np.squeeze(res.x)
 
             N_new = int(np.floor(dx / (2 * r * np.sin(theta)))) - 1 if (theta != 0) else 1
@@ -60,7 +65,7 @@ def new_device(
 
             while N_new != N:
                 N = np.copy(N_new)
-                res = root(func, 0, args=(N,))
+                res = sci.optimize.root(func, 0, args=(N,))
                 theta = np.squeeze(res.x)
 
                 if theta <= 0.1 * np.pi / 180:
@@ -82,7 +87,7 @@ def new_device(
         width = length_wiggle / (N + 1) + 2 * r - np.pi * r
 
         if (width < 2 * r):
-            res = root(func, 0, args=(N,))
+            res = sci.optimize.root(func, 0, args=(N,))
             theta = np.squeeze(res.x)
             length_wiggle = 2 * (N + 1) * r * theta
             width = 0
@@ -129,16 +134,16 @@ def new_device(
 
     return cpw_1
 
-
+#%% example
 x = new_device(pt_start=0, pt_stop=1050,
                length=1050)
 
-chip_1 = chip(name='cpw_offline',
+chip_1 = chip(name=device_name,
               time=time_stamp,
               logo='QCD',
               die_size=(15e3, 15e3),
               chip_size=(10e3, 10e3),
               trap_size=(20, 100))
 
-chip_1.add_device('cpw_offline', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='1')
-chip_1.gen_gds(marker=True, flux_trap=False, set_zero=False)
+chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='1')
+chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)

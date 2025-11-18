@@ -1,18 +1,20 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
 from class_device import device
-
 from class_chip import chip
 import aux_poly
 
-
+#%% design
 def new_device(length=50,
                a=10, b=6,
                a2=5, b2=3,
@@ -79,15 +81,15 @@ def new_device(length=50,
     poly_2 = aux_poly.reflect(poly_1, axis='x', value=0)
     taper.add_geometry(layer, [poly_1, poly_2])
 
-    taper.add_port('1', 0, degree=180)
-    taper.add_port('2', length, degree=0)
+    taper.add_port('1', 0)
+    taper.add_port('2', length)
 
     return taper
 
-
+#%% example
 x = new_device(length=50, a=10, b=6, a2=15, b2=12, form='sigmoid')
 
-chip_1 = chip(name='taper',
+chip_1 = chip(name=device_name,
               time=time_stamp,
               logo='QCD',
               die_size=(15e3, 15e3),

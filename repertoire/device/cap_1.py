@@ -1,16 +1,20 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
 from class_device import device
 from class_chip import chip
-
 import aux_poly
 
-
+#%% design
 def new_device(
         width=(30, 30),
         gap=(6, 12),
@@ -45,10 +49,10 @@ def new_device(
 
     return cap_1
 
-
+#%% example
 x = new_device()
 
-chip_1 = chip(name='cap',
+chip_1 = chip(name=device_name,
               time=time_stamp,
               logo='QCD',
               die_size=(15e3, 15e3),

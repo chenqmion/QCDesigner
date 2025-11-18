@@ -10,33 +10,33 @@ class device():
 
     def combine_device(self, device, ref=None, degree=0, axis=None, port=None):
         if port == None:
-            ref_port = [0, 0]
+            ref_port = 0
         else:
             ref_port = device.ports[port]
 
         if ref == None:
             d_vector = 0 + 0j
         else:
-            d_vector = ref - ref_port[0]
+            d_vector = ref - ref_port
 
         for num_layer, key_layer in enumerate(list(device.layers.keys())):
             val_geometry = (device.layers[key_layer]).copy()
             self.add_geometry(layer=key_layer, geometry=val_geometry, ref=d_vector, degree=degree, axis=axis,
-                              ref_port=ref_port[0])
+                              ref_port=ref_port)
 
         # ports
         new_ports = {}
         if len(device.ports) != 0:
             for num_port, key_port in enumerate(list(device.ports.keys())):
                 if axis == 'x':
-                    val_port = aux_poly.reflect([device.ports[key_port]], axis='x', value=np.imag(ref_port[0]))
+                    val_port = aux_poly.reflect([device.ports[key_port]], axis='x', value=np.imag(ref_port))
                 elif axis == 'y':
-                    val_port = aux_poly.reflect([device.ports[key_port]], axis='y', value=np.real(ref_port[0]))
+                    val_port = aux_poly.reflect([device.ports[key_port]], axis='y', value=np.real(ref_port))
                 else:
                     val_port = [device.ports[key_port]]
 
-                _port = aux_poly.rotate(val_port, origin=ref_port[0], degree=degree)
-                new_ports[key_port] = [_port[0] + d_vector, ref_port[1] + degree]
+                _port = aux_poly.rotate(val_port, origin=ref_port, degree=degree)
+                new_ports[key_port] = _port + d_vector
 
         return new_ports
 
@@ -57,8 +57,8 @@ class device():
         else:
             self.layers[layer] = geometry2
 
-    def add_port(self, name, ref_port, degree=0):
-        self.ports[name] = [ref_port, degree]
+    def add_port(self, name, ref_port):
+        self.ports[name] = ref_port
 
     def terminate_port(self, num_port, width=22, gap=6, degree=0, layer='Nb_inv'):
         poly_1 = [-1j * width / 2]

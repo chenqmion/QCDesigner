@@ -1,16 +1,20 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
 from class_device import device
 from class_chip import chip
+import aux_poly
 
-
+#%% design
 def new_device(
         path=[0, 1000, 1500 - 500j, 1000 - 1000j, 0 - 1000j, -1000 - 1000j, -500 - 1500j, -1000 - 2000j, 0 - 2000j],
         a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nv_inv'):
@@ -147,17 +151,18 @@ path = [0.00000000e+00 + 0.j, 1.78019263e-14 + 290.72751902j,
         2.64451358e-14 + 431.88184248j, 2.81223287e-14 + 459.27248098j,
         4.59242550e-14 + 750.j]
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
+#
+# plt.figure()
+# for x in path:
+#     plt.scatter(x.real, x.imag)
+# plt.savefig('x.pdf')
+# # plt.show()
 
-plt.figure()
-for x in path:
-    plt.scatter(x.real, x.imag)
-plt.savefig('x.pdf')
-# plt.show()
-
+#%% example
 x = new_device(path=path)
 
-chip_1 = chip(name='cpw',
+chip_1 = chip(name=device_name,
               time=time_stamp,
               logo='QCD',
               die_size=(15e3, 15e3),

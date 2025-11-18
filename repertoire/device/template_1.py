@@ -1,21 +1,26 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
+from class_device import device
 from class_chip import chip
-
-import aux_marker
 import aux_poly
+import aux_marker
+
+#%% dependence
 import launcher_1 as launcher
 
-
-def new_device(name='template',
-               time='250611',
+#%% design
+def new_device(name=device_name,
+               time=time_stamp,
                logo='QCD',
                die_size=(15e3, 15e3),
                chip_size=(10e3, 10e3),
@@ -103,6 +108,6 @@ def new_device(name='template',
 
     return chip_1
 
-
+#%% example
 x = new_device(time=time_stamp)
-x.gen_gds(marker=True, flux_trap=True, set_zero=False)
+x.gen_gds(marker=True, flux_trap=True, set_zero=True)

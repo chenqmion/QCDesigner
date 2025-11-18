@@ -1,14 +1,20 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
+from class_device import device
 from class_chip import chip
+import aux_poly
 
+#%% dependence
 import cpw_1 as cpw
 import lambda4_1 as lambda4
 import cross_1 as cross
@@ -16,7 +22,7 @@ import finger_1 as finger
 
 import bolometer_1 as bolometer
 
-
+#%% design
 def new_device(
         ro_length=[4250, 1400],
         ro_width=[250, 250, 100],
@@ -87,8 +93,8 @@ def new_device(
     cpw_2_ports = cpw_1.combine_device(cpw_2, ref=cross_1_ports['90'], degree=0, axis='none', port='1')
 
     # %% finger 1
-    finger_1 = finger.new_device(width=5 * (3 * finger_number[0] - 1),
-                                 gap=[finger_gap, 5 * (3 * finger_number[0] - 1) * b / a],
+    finger_1 = finger.new_device(finger_width=5 * (3 * finger_number[0] - 1),
+                                 finger_gap=[finger_gap, 5 * (3 * finger_number[0] - 1) * b / a],
                                  length=finger_length[0],
                                  N=finger_number[0],
                                  a=[finger_gap, finger_gap],
@@ -129,16 +135,16 @@ def new_device(
     # cpw_3b_ports = cpw_1.combine_device(cpw_3b, ref=cross_2b_ports['0'], degree=0, axis='none', port='1')
 
     # %% finger 2
-    finger_2 = finger.new_device(width=5 * (3 * finger_number[1] - 1),
-                                 gap=[finger_gap, 5 * (3 * finger_number[1] - 1) * b / a],
+    finger_2 = finger.new_device(finger_width=5 * (3 * finger_number[1] - 1),
+                                 finger_gap=[finger_gap, 5 * (3 * finger_number[1] - 1) * b / a],
                                  length=finger_length[1], N=finger_number[1],
                                  a=[a, finger_gap],
                                  b=[b, finger_gap * b / a],
                                  layer=layer)
     finger_2_ports = cpw_1.combine_device(finger_2, ref=cpw_1b_ports['1'], degree=90, axis='none', port='1')
 
-    finger_3 = finger.new_device(width=5 * (3 * finger_number[1] - 1),
-                                 gap=[finger_gap, 5 * (3 * finger_number[1] - 1) * b / a],
+    finger_3 = finger.new_device(finger_width=5 * (3 * finger_number[1] - 1),
+                                 finger_gap=[finger_gap, 5 * (3 * finger_number[1] - 1) * b / a],
                                  length=finger_length[1], N=finger_number[1],
                                  a=[5 * (3 * finger_number[1] - 1), a],
                                  b=[5 * (3 * finger_number[1] - 1) * b / a, b],
@@ -176,15 +182,15 @@ def new_device(
 
     return cpw_1
 
-
+#%% example
 x = new_device()
 
-chip_1 = chip(name='purcell',
-              time='250819',
+chip_1 = chip(name=device_name,
+              time=time_stamp,
               logo='QCD',
               die_size=(15e3, 15e3),
               chip_size=(10e3, 10e3),
               trap_size=(20, 100))
 
-chip_1.add_device('purcell', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='1')
-chip_1.gen_gds(marker=True, flux_trap=False, set_zero=False)
+chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='1')
+chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)

@@ -1,17 +1,20 @@
+import numpy as np
+import scipy as sci
+
 import datetime
 import sys
-
-import numpy as np
+import os
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
+device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
 from class_device import device
-
+from class_chip import chip
 import aux_poly
 
-
+#%% design
 def new_device(angle=(0, 90, 180, 270),
                length=(130, 130, 130, 130),
                a_list=(8, 8, 8, 8),
@@ -85,7 +88,7 @@ def new_device(angle=(0, 90, 180, 270),
 
     return cross
 
-
+#%% example
 x = new_device(angle=(0, 180, 270),
                length=(100, 100, 100),
                a_list=(5, 10, 5),
@@ -100,19 +103,20 @@ x = new_device(angle=(0, 180, 270),
 #               c_list=(0, 0, 0),
 #               layer='Nb_inv')
 
-# chip_1 = design(name='cross',
-#               time='250611',
-#               logo='QCD',
-#               die_size=(15e3, 15e3),
-#               chip_size=(10e3, 10e3),
-#               trap_size=(20, 100))
-# chip_1.add_device('cross', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='0')
-# chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+chip_1 = chip(name=device_name,
+              time=time_stamp,
+              logo='QCD',
+              die_size=(15e3, 15e3),
+              chip_size=(10e3, 10e3),
+              trap_size=(20, 100))
+
+chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='0')
+chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
 
 # x = cap()
 #
-# chip_1 = design(name='cross_cap',
-#               time='250611',
+# chip_1 = design(name=device_name,
+#               time=time_stamp,
 #               logo='QCD',
 #               die_size=(15e3, 15e3),
 #               chip_size=(10e3, 10e3),
