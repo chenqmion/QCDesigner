@@ -1,6 +1,10 @@
 import sys
 
 import numpy as np
+import datetime
+
+today = str(datetime.date.today()).split('-')
+time_stamp = today[0][-2:] + today[1] + today[2]
 
 sys.path.append('../')
 from class_device import device

@@ -1,6 +1,10 @@
 import sys
 
 import numpy as np
+import datetime
+
+today = str(datetime.date.today()).split('-')
+time_stamp = today[0][-2:] + today[1] + today[2]
 
 sys.path.append('../')
 from class_device import device
@@ -43,13 +47,13 @@ def new_device(
 
     return cap_1
 
-# x = new_device()
-#
-# chip_1 = design(name='cap',
-#               time='250611',
-#               logo='QCD',
-#               die_size=(15e3, 15e3),
-#               chip_size=(10e3, 10e3),
-#               trap_size=(20, 100))
-# chip_1.add_device('cap', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='inside')
-# chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+x = new_device()
+
+chip_1 = chip(name='cap',
+              time=time_stamp,
+              logo='QCD',
+              die_size=(15e3, 15e3),
+              chip_size=(10e3, 10e3),
+              trap_size=(20, 100))
+chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='inside')
+chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
