@@ -17,10 +17,10 @@ h_cavity = 40e-3
 r_stub = 1.5e-3
 h_stub = 7e-3
 
-#%%
 client = mph.start()
-
 model = client.create('stub cavity')
+
+#%% geometry
 geometries = model/'geometries'
 geometry = geometries.create(3, name='geom1')
 
@@ -38,4 +38,14 @@ diff1.selection("input2").set("cyl2")
 diff1.set("keepsubtract", True)
 
 model.build(geometry)
+
+#%% material
+materials = model/'materials'
+# mph.inspect((model/'materials').java)
+
+
+model.materials()
+
+# model.mesh()
+# model.solve()
 model.save('model')

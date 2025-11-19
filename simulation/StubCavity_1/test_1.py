@@ -36,7 +36,7 @@ model.geom("geom1").feature("cyl2").set('h', h_stub)
 model.geom("geom1").feature().create("diff1", "Difference")
 model.geom("geom1").feature("diff1").selection("input").set("cyl1")
 model.geom("geom1").feature("diff1").selection("input2").set("cyl2")
-model.geom("geom1").feature("diff1").selection("input2").set("cyl2")
+model.geom("geom1").feature("diff1").set("keepsubtract", True)
 
 model.geom("geom1").run("fin")
 
