@@ -17,10 +17,10 @@ h_cavity = 40e-3
 r_stub = 1.5e-3
 h_stub = 7e-3
 
+#%%
 client = mph.start()
-model = client.create('stub cavity')
 
-#%% geometry
+model = client.create('stub cavity')
 geometries = model/'geometries'
 geometry = geometries.create(3, name='geom1')
 
@@ -32,25 +32,10 @@ stub = geometry.create('Cylinder')
 stub.property('r', r_stub)
 stub.property('h', h_stub)
 
-# diff1 = model.java.geom("geom1").feature().create("diff1", "Difference")
-# diff1.selection("input").set("cyl1")
-# diff1.selection("input2").set("cyl2")
-# diff1.set("keepsubtract", True)
-
-diff1 = geometry.create('Difference', name='dif1')
-diff1.java.selection('input').set(['cyl1'])
-diff1.java.selection('input2').set(['cyl2'])
-diff1.java.set("keepsubtract", True)
+diff1 = model.java.geom("geom1").feature().create("diff1", "Difference")
+diff1.selection("input").set("cyl1")
+diff1.selection("input2").set("cyl2")
+diff1.set("keepsubtract", True)
 
 model.build(geometry)
-
-#%% material
-materials = model/'materials'
-# mph.inspect((model/'materials').java)
-
-
-model.materials()
-
-# model.mesh()
-# model.solve()
 model.save('model')
