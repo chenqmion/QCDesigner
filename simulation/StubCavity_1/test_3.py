@@ -106,35 +106,84 @@ model.geom("geom1").feature("diff1").set("intbnd", False)
 
 model.geom("geom1").run("fin")
 
-# #%% material
-# model.component("comp1").material().create("mat1", "Common")
-# model.material("mat1").propertyGroup("def").set("relpermittivity", "1")
-# model.material("mat1").propertyGroup("def").set("relpermeability", "1")
-# model.material("mat1").propertyGroup("def").set("electricconductivity", "0")
-# # model.material("mat1").selection().set(1)
-#
-# #%% physics
-# model.component("comp1").physics().create("emw", "ElectromagneticWaves", "geom1")
+#%% material
+model.component("comp1").material().create("mat1", "Common")
+model.material("mat1").propertyGroup("def").set("relpermittivity", "1")
+model.material("mat1").propertyGroup("def").set("relpermeability", "1")
+model.material("mat1").propertyGroup("def").set("electricconductivity", "0")
+# model.material("mat1").selection().set(1)
+
+#%% physics
+model.component("comp1").physics().create("emw", "ElectromagneticWaves", "geom1")
+model.physics("emw").create("pec2", "DomainPerfectElectricConductor", 3)
+model.physics("emw").feature("pec2").selection().set(2, 3, 4, 5)
+
+model.physics("emw").create("lport1", "LumpedPort", 2)
+model.physics("emw").feature("lport1").set("PortType", "Coaxial")
+model.view("view1").set("showDirections", False)
+model.physics("emw").feature("lport1").set("PortExcitation", "off")
+model.physics("emw").feature("lport1").selection().set(1)
+
+model.physics("emw").create("lport2", "LumpedPort", 2)
+model.physics("emw").feature("lport2").set("PortType", "Coaxial")
+model.view("view1").set("showDirections", False)
+model.physics("emw").feature("lport2").set("PortExcitation", "off")
+model.physics("emw").feature("lport2").selection().set(30)
+
+model.physics("emw").create("lport3", "LumpedPort", 2)
+model.physics("emw").feature("lport3").set("PortType", "Coaxial")
+model.view("view1").set("showDirections", False)
+model.physics("emw").feature("lport3").set("PortExcitation", "off")
+model.physics("emw").feature("lport3").selection().set(49)
+
 # model.physics("emw").selection().set(1)
-#
-# #%% mesh
-# model.component("comp1").mesh().create("mesh1")
-# model.mesh("mesh1").autoMeshSize(5)
-# model.mesh("mesh1").run()
-#
-# #%% study
-# model.study().create("std1")
-# model.study("std1").feature().create("eig", "Eigenfrequency")
-# model.study("std1").feature("eig").set('shift', "5[GHz]")
-# model.study("std1").feature("eig").set('neigs', "10")
-# model.study("std1").feature("eig").set('eigwhich', 'lr')
-#
+
+#%% mesh
+model.component("comp1").mesh().create("mesh1")
+model.mesh("mesh1").autoMeshSize(5)
+model.mesh("mesh1").run()
+
+#%% study
+model.study().create("std1")
+model.study("std1").feature().create("eig", "Eigenfrequency")
+model.study("std1").feature("eig").set('shift', "3[GHz]")
+model.study("std1").feature("eig").set('neigs', "5")
+model.study("std1").feature("eig").set('eigwhich', 'lr')
+
 # # model.study("std1").run()
-# model.study("std1").createAutoSequences("all")
-# model.sol("sol1").runAll()
+model.study("std1").createAutoSequences("all")
+model.sol("sol1").runAll()
 
 #%% plot
-# model.result("pg1").run()
+model.result().create("pg1", "PlotGroup3D")
+
+# model.result().dataset().create("dset1", "Solution")
+model.result("pg1").create("vol1", "Volume")
+model.result("pg1").feature("vol1").set("evaluationsettings", "parent")
+model.result("pg1").feature("vol1").set("data", "dset1")
+
+model.result().dataset().create("cpl1", "CutPlane")
+model.result().dataset("cpl1").set("quickplane", "xz")
+model.result("pg1").create("surf1", "Surface")
+model.result("pg1").feature("surf1").set("evaluationsettings", "parent")
+model.result("pg1").feature("surf1").set("data", "cpl1")
+
+model.result("pg1").run()
+
+#%% data
+model.result().numerical().create("gev1", "EvalGlobal")
+model.result().numerical("gev1").set("expr","emw.freq")
+model.result().numerical("gev1").set("descr", "Frequency")
+
+model.result().numerical("gev1").set("expr", ["emw.freq", "emw.Zport_1"])
+model.result().numerical("gev1").set("descr", ["Frequency", "Lumped port 1 impedance"])
+
+model.result().table().create("tbl1", "Table")
+model.result().table("tbl1").comments("Global Evaluation 1")
+model.result().numerical("gev1").set("table", "tbl1")
+model.result().numerical("gev1").setResult()
 
 #%%
 pymodel.save('model')
+
+print(pymodel.evaluate('emw.freq', dataset='Study 1//Solution 1'))
