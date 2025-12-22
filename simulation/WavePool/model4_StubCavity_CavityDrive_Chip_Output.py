@@ -29,19 +29,20 @@ r_tube = 2e-3
 l_tube = r_cavity + 25e-3
 
 x_chip = 2e-3
-l_chip = 20e-3
+l_chip = (r_cavity - r_stub - x_chip) + (l_tube - r_cavity) + 1e-3
 w_chip = 5e-3
 h_chip = 675e-6
 
-l_resonator = 12e-3
+x_resonator = 2e-3
+l_resonator = 10e-3
 w_resonator = 0.5e-3
 
 x_qubit_drive = r_cavity + 10e-3
 l_qubit_drive_1 = r_tube + 5e-3
 l_qubit_drive_2 = 2e-3
 
-z_output = z_tube + 0.85e-3
-l_output_1 = 5e-3
+x_output = x_qubit_drive + 10e-3
+l_output_1 = r_tube + 5e-3
 l_output_2 = 2e-3
 
 #%%
@@ -91,36 +92,39 @@ model.geom("geom1").feature("wp2").set("unite", True)
 model.geom("geom1").feature("wp2").set("quickz", z_tube+h_chip/2)
 
 model.component("comp1").geom("geom1").feature("wp2").geom().create("r1", "Rectangle")
-model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("size", [1e-3, 2e-3])
+model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("size", [l_resonator, w_resonator])
+model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("pos", [r_stub + x_chip + x_resonator, -w_resonator/2])
 
 # qubit drive
 model.geom("geom1").feature().create("cyl_qubit_drive1", "Cylinder")
+model.geom("geom1").feature("cyl_qubit_drive1").set('axistype', 'z')
 model.geom("geom1").feature("cyl_qubit_drive1").set("pos", [x_qubit_drive, 0, z_tube])
 model.geom("geom1").feature("cyl_qubit_drive1").set('r', r_bulk)
 model.geom("geom1").feature("cyl_qubit_drive1").set('h', l_qubit_drive_1)
 
 model.geom("geom1").feature().create("cyl_qubit_drive2", "Cylinder")
-model.geom("geom1").feature("cyl_qubit_drive2").set("pos", [x_qubit_drive, 0, z_tube + l_qubit_drive_1 - l_qubit_drive_2])
+model.geom("geom1").feature("cyl_qubit_drive2").set('axistype', 'z')
+model.geom("geom1").feature("cyl_qubit_drive2").set("pos", [x_qubit_drive, 0, z_tube + (l_qubit_drive_1-l_qubit_drive_2)])
 model.geom("geom1").feature("cyl_qubit_drive2").set('r', r_pin)
 model.geom("geom1").feature("cyl_qubit_drive2").set('h', l_qubit_drive_2)
 
 # output
 model.geom("geom1").feature().create("cyl_output1", "Cylinder")
-model.geom("geom1").feature("cyl_output1").set('axistype', 'x')
-model.geom("geom1").feature("cyl_output1").set("pos", [l_tube, 0, z_output])
+model.geom("geom1").feature("cyl_output1").set('axistype', 'z')
+model.geom("geom1").feature("cyl_output1").set("pos", [x_output, 0, z_tube])
 model.geom("geom1").feature("cyl_output1").set('r', r_bulk)
 model.geom("geom1").feature("cyl_output1").set('h', l_output_1)
 
 model.geom("geom1").feature().create("cyl_output2", "Cylinder")
-model.geom("geom1").feature("cyl_output2").set('axistype', 'x')
-model.geom("geom1").feature("cyl_output2").set("pos", [l_tube + (l_output_1 - l_output_2), 0, z_output])
+model.geom("geom1").feature("cyl_output2").set('axistype', 'z')
+model.geom("geom1").feature("cyl_output2").set("pos", [x_output, 0, z_tube + (l_output_1-l_output_2)])
 model.geom("geom1").feature("cyl_output2").set('r', r_pin)
 model.geom("geom1").feature("cyl_output2").set('h', l_output_2)
 
 # combine
 model.geom("geom1").feature().create("diff1", "Difference")
-model.geom("geom1").feature("diff1").selection("input").set("cyl_cavity", "cyl_tube", "cyl_cavity_drive1")
-model.geom("geom1").feature("diff1").selection("input2").set("cyl_stub", "cyl_cavity_drive2")
+model.geom("geom1").feature("diff1").selection("input").set("cyl_cavity", "cyl_tube", "cyl_cavity_drive1", "cyl_qubit_drive1", "cyl_output1")
+model.geom("geom1").feature("diff1").selection("input2").set("cyl_stub", "cyl_cavity_drive2", "cyl_qubit_drive2", "cyl_output2")
 model.geom("geom1").feature("diff1").set("keepsubtract", True)
 model.geom("geom1").feature("diff1").set("intbnd", False)
 
@@ -131,12 +135,20 @@ model.component("comp1").material().create("mat1", "Common")
 model.material("mat1").propertyGroup("def").set("relpermittivity", "1")
 model.material("mat1").propertyGroup("def").set("relpermeability", "1")
 model.material("mat1").propertyGroup("def").set("electricconductivity", "0")
-# model.material("mat1").selection().set(1)
+
+model.component("comp1").material().create("mat2", "Common")
+model.material("mat2").propertyGroup("def").set("relpermittivity", "11.7")
+model.material("mat2").propertyGroup("def").set("relpermeability", "1")
+model.material("mat2").propertyGroup("def").set("electricconductivity", "1e-12")
+model.material("mat2").selection().set(4, 5)
 
 #%% physics
 model.component("comp1").physics().create("emw", "ElectromagneticWaves", "geom1")
 model.physics("emw").create("pec2", "DomainPerfectElectricConductor", 3)
-model.physics("emw").feature("pec2").selection().set(2, 3, 4, 5)
+model.physics("emw").feature("pec2").selection().set(2, 3, 6, 7)
+
+model.physics("emw").create("pec3", "PerfectElectricConductor", 2)
+model.physics("emw").feature("pec3").selection().set(43)
 
 model.physics("emw").create("sctr1", "Scattering", 2)
 model.physics("emw").feature("sctr1").selection().set(15)
@@ -151,15 +163,13 @@ model.physics("emw").create("lport2", "LumpedPort", 2)
 model.physics("emw").feature("lport2").set("PortType", "Coaxial")
 model.view("view1").set("showDirections", False)
 model.physics("emw").feature("lport2").set("PortExcitation", "off")
-model.physics("emw").feature("lport2").selection().set(30)
+model.physics("emw").feature("lport2").selection().set(46)
 
 model.physics("emw").create("lport3", "LumpedPort", 2)
 model.physics("emw").feature("lport3").set("PortType", "Coaxial")
 model.view("view1").set("showDirections", False)
 model.physics("emw").feature("lport3").set("PortExcitation", "off")
-model.physics("emw").feature("lport3").selection().set(49)
-
-# model.physics("emw").selection().set(1)
+model.physics("emw").feature("lport3").selection().set(57)
 
 #%% mesh
 model.component("comp1").mesh().create("mesh1")
@@ -200,10 +210,17 @@ pymodel.save('model_4')
 freqs = pymodel.evaluate('emw.freq', dataset="Study 1//Solution 1")
 Qs = pymodel.evaluate('emw.Qfactor', dataset="Study 1//Solution 1")
 
-P_1 = pymodel.evaluate('emw.Pport_1', dataset="Study 1//Solution 1")
 P_electric = pymodel.evaluate('emw.intWe', dataset="Study 1//Solution 1")
 P_magnetic = pymodel.evaluate('emw.intWm', dataset="Study 1//Solution 1")
+
+P_1 = pymodel.evaluate('emw.Pport_1', dataset="Study 1//Solution 1")
+P_2 = pymodel.evaluate('emw.Pport_2', dataset="Study 1//Solution 1")
+P_3 = pymodel.evaluate('emw.Pport_3', dataset="Study 1//Solution 1")
+
 Q_1s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_1)
+Q_2s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_2)
+Q_3s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_3)
 
 print(Qs)
-print(Q_1s)
+print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
+print(Q_1s, Q_2s, Q_3s)
