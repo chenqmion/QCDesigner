@@ -159,13 +159,13 @@ model.result().create("pg1", "PlotGroup3D")
 
 # model.result().dataset().create("dset1", "Solution")
 model.result("pg1").create("vol1", "Volume")
-model.result("pg1").feature("vol1").set("evaluationsettings", "parent")
+# model.result("pg1").feature("vol1").set("evaluationsettings", "parent")
 model.result("pg1").feature("vol1").set("data", "dset1")
 
 model.result().dataset().create("cpl1", "CutPlane")
 model.result().dataset("cpl1").set("quickplane", "xz")
 model.result("pg1").create("surf1", "Surface")
-model.result("pg1").feature("surf1").set("evaluationsettings", "parent")
+# model.result("pg1").feature("surf1").set("evaluationsettings", "parent")
 model.result("pg1").feature("surf1").set("data", "cpl1")
 
 model.result("pg1").run()
@@ -186,4 +186,5 @@ model.result().numerical("gev1").setResult()
 #%%
 pymodel.save('model')
 
-print(pymodel.evaluate('emw.freq', dataset='Study 1//Solution 1'))
+print(pymodel.evaluate('emw.freq', dataset="Study 1//Solution 1"))
+print(mph.tree(pymodel))
