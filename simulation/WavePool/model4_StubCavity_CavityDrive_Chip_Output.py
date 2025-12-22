@@ -28,6 +28,14 @@ z_tube = np.copy(h_stub)
 r_tube = 2e-3
 l_tube = r_cavity + 25e-3
 
+x_chip = 2e-3
+l_chip = 20e-3
+w_chip = 5e-3
+h_chip = 675e-6
+
+l_resonator = 12e-3
+w_resonator = 0.5e-3
+
 x_qubit_drive = r_cavity + 10e-3
 l_qubit_drive_1 = r_tube + 5e-3
 l_qubit_drive_2 = 2e-3
@@ -72,6 +80,42 @@ model.geom("geom1").feature("cyl_tube").set('axistype', 'x')
 model.geom("geom1").feature("cyl_tube").set("pos", [0, 0, z_tube])
 model.geom("geom1").feature("cyl_tube").set('r', r_tube)
 model.geom("geom1").feature("cyl_tube").set('h', l_tube)
+
+# chip
+model.geom("geom1").feature().create("blk_chip", "Block")
+model.geom("geom1").feature("blk_chip").set("pos", [r_stub + x_chip, -w_chip/2, z_tube-h_chip/2])
+model.geom("geom1").feature("blk_chip").set("size", [l_chip, w_chip, h_chip])
+
+model.geom("geom1").feature().create("wp2", "WorkPlane")
+model.geom("geom1").feature("wp2").set("unite", True)
+model.geom("geom1").feature("wp2").set("quickz", z_tube+h_chip/2)
+
+model.component("comp1").geom("geom1").feature("wp2").geom().create("r1", "Rectangle")
+model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("size", [1e-3, 2e-3])
+
+# qubit drive
+model.geom("geom1").feature().create("cyl_qubit_drive1", "Cylinder")
+model.geom("geom1").feature("cyl_qubit_drive1").set("pos", [x_qubit_drive, 0, z_tube])
+model.geom("geom1").feature("cyl_qubit_drive1").set('r', r_bulk)
+model.geom("geom1").feature("cyl_qubit_drive1").set('h', l_qubit_drive_1)
+
+model.geom("geom1").feature().create("cyl_qubit_drive2", "Cylinder")
+model.geom("geom1").feature("cyl_qubit_drive2").set("pos", [x_qubit_drive, 0, z_tube + l_qubit_drive_1 - l_qubit_drive_2])
+model.geom("geom1").feature("cyl_qubit_drive2").set('r', r_pin)
+model.geom("geom1").feature("cyl_qubit_drive2").set('h', l_qubit_drive_2)
+
+# output
+model.geom("geom1").feature().create("cyl_output1", "Cylinder")
+model.geom("geom1").feature("cyl_output1").set('axistype', 'x')
+model.geom("geom1").feature("cyl_output1").set("pos", [l_tube, 0, z_output])
+model.geom("geom1").feature("cyl_output1").set('r', r_bulk)
+model.geom("geom1").feature("cyl_output1").set('h', l_output_1)
+
+model.geom("geom1").feature().create("cyl_output2", "Cylinder")
+model.geom("geom1").feature("cyl_output2").set('axistype', 'x')
+model.geom("geom1").feature("cyl_output2").set("pos", [l_tube + (l_output_1 - l_output_2), 0, z_output])
+model.geom("geom1").feature("cyl_output2").set('r', r_pin)
+model.geom("geom1").feature("cyl_output2").set('h', l_output_2)
 
 # combine
 model.geom("geom1").feature().create("diff1", "Difference")

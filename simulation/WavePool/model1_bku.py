@@ -73,10 +73,34 @@ model.geom("geom1").feature("cyl_tube").set("pos", [0, 0, z_tube])
 model.geom("geom1").feature("cyl_tube").set('r', r_tube)
 model.geom("geom1").feature("cyl_tube").set('h', l_tube)
 
+# qubit drive
+model.geom("geom1").feature().create("cyl_qubit_drive1", "Cylinder")
+model.geom("geom1").feature("cyl_qubit_drive1").set("pos", [x_qubit_drive, 0, z_tube])
+model.geom("geom1").feature("cyl_qubit_drive1").set('r', r_bulk)
+model.geom("geom1").feature("cyl_qubit_drive1").set('h', l_qubit_drive_1)
+
+model.geom("geom1").feature().create("cyl_qubit_drive2", "Cylinder")
+model.geom("geom1").feature("cyl_qubit_drive2").set("pos", [x_qubit_drive, 0, z_tube + l_qubit_drive_1 - l_qubit_drive_2])
+model.geom("geom1").feature("cyl_qubit_drive2").set('r', r_pin)
+model.geom("geom1").feature("cyl_qubit_drive2").set('h', l_qubit_drive_2)
+
+# output
+model.geom("geom1").feature().create("cyl_output1", "Cylinder")
+model.geom("geom1").feature("cyl_output1").set('axistype', 'x')
+model.geom("geom1").feature("cyl_output1").set("pos", [l_tube, 0, z_output])
+model.geom("geom1").feature("cyl_output1").set('r', r_bulk)
+model.geom("geom1").feature("cyl_output1").set('h', l_output_1)
+
+model.geom("geom1").feature().create("cyl_output2", "Cylinder")
+model.geom("geom1").feature("cyl_output2").set('axistype', 'x')
+model.geom("geom1").feature("cyl_output2").set("pos", [l_tube + (l_output_1 - l_output_2), 0, z_output])
+model.geom("geom1").feature("cyl_output2").set('r', r_pin)
+model.geom("geom1").feature("cyl_output2").set('h', l_output_2)
+
 # combine
 model.geom("geom1").feature().create("diff1", "Difference")
-model.geom("geom1").feature("diff1").selection("input").set("cyl_cavity", "cyl_tube", "cyl_cavity_drive1")
-model.geom("geom1").feature("diff1").selection("input2").set("cyl_stub", "cyl_cavity_drive2")
+model.geom("geom1").feature("diff1").selection("input").set("cyl_cavity", "cyl_tube", "cyl_cavity_drive1", "cyl_qubit_drive1", "cyl_output1")
+model.geom("geom1").feature("diff1").selection("input2").set("cyl_stub", "cyl_cavity_drive2", "cyl_qubit_drive2", "cyl_output2")
 model.geom("geom1").feature("diff1").set("keepsubtract", True)
 model.geom("geom1").feature("diff1").set("intbnd", False)
 
