@@ -190,16 +190,16 @@ model.sol("sol1").runAll()
 #%% plot
 model.result().create("pg1", "PlotGroup3D")
 
-# model.result().dataset().create("dset1", "Solution")
-model.result("pg1").create("vol1", "Volume")
-# model.result("pg1").feature("vol1").set("evaluationsettings", "parent")
+model.result("pg1").feature().create("vol1", "Volume")
 model.result("pg1").feature("vol1").set("data", "dset1")
+model.result("pg1").feature("vol1").set("solutionparams", "parent")
 
 model.result().dataset().create("cpl1", "CutPlane")
 model.result().dataset("cpl1").set("quickplane", "xz")
-model.result("pg1").create("surf1", "Surface")
-# model.result("pg1").feature("surf1").set("evaluationsettings", "parent")
+
+model.result("pg1").feature().create("surf1", "Surface")
 model.result("pg1").feature("surf1").set("data", "cpl1")
+model.result("pg1").feature("surf1").set("solutionparams", "parent")
 
 model.result("pg1").run()
 
