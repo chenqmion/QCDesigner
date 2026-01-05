@@ -15,12 +15,12 @@ r_cavity = 4.5e-3
 h_cavity = 50e-3
 
 r_stub = 1.5e-3
-h_stub = 15e-3
+h_stub = 15.05e-3
 
 r_pin = 0.5e-3
 r_bulk = 1.15e-3
 
-z_cavity_drive = 20e-3
+z_cavity_drive = 25e-3
 l_cavity_drive_1 = r_cavity + 5e-3
 l_cavity_drive_2 = 2e-3
 
@@ -28,20 +28,34 @@ z_tube = np.copy(h_stub)
 r_tube = 2e-3
 l_tube = r_cavity + 25e-3
 
-x_chip = 2e-3
-l_chip = (r_cavity - r_stub - x_chip) + (l_tube - r_cavity) + 1e-3
+x_chip = r_cavity - 1.5e-3
+l_chip = (r_cavity - x_chip) + (l_tube - r_cavity) + 1e-3
 w_chip = 5e-3
 h_chip = 675e-6
 
-x_resonator = 2e-3
-l_resonator = 10e-3
-w_resonator = 0.5e-3
+x_bulb = r_cavity - 1e-3
+r_bulb = 250e-6
+h_bulb = 150e-6
 
-x_qubit_drive = r_cavity + 10e-3
+x_qubit = r_cavity + 400e-6
+w_cap_1 = 400e-6
+h_cap_1 = 1000e-6
+w_cap_2 = 400e-6
+h_cap_2 = 1000e-6
+
+w_junction = 150e-6
+h_junction = 50e-6
+L_junction = 3.05e-9
+
+x_resonator = x_qubit + (w_cap_1 + w_cap_2 + w_junction) + 850e-6
+l_resonator = 7250e-6
+w_resonator = 150e-6
+
+x_qubit_drive = r_cavity + 6e-3
 l_qubit_drive_1 = r_tube + 5e-3
 l_qubit_drive_2 = 2e-3
 
-x_output = x_qubit_drive + 10e-3
+x_output = r_cavity + 12e-3
 l_output_1 = r_tube + 5e-3
 l_output_2 = 2e-3
 
@@ -84,16 +98,42 @@ model.geom("geom1").feature("cyl_tube").set('h', l_tube)
 
 # chip
 model.geom("geom1").feature().create("blk_chip", "Block")
-model.geom("geom1").feature("blk_chip").set("pos", [r_stub + x_chip, -w_chip/2, z_tube-h_chip/2])
+model.geom("geom1").feature("blk_chip").set("pos", [x_chip, -w_chip/2, z_tube-h_chip/2])
 model.geom("geom1").feature("blk_chip").set("size", [l_chip, w_chip, h_chip])
 
 model.geom("geom1").feature().create("wp2", "WorkPlane")
 model.geom("geom1").feature("wp2").set("unite", True)
 model.geom("geom1").feature("wp2").set("quickz", z_tube+h_chip/2)
 
-model.component("comp1").geom("geom1").feature("wp2").geom().create("r1", "Rectangle")
-model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("size", [l_resonator, w_resonator])
-model.component("comp1").geom("geom1").feature("wp2").geom().feature("r1").set("pos", [r_stub + x_chip + x_resonator, -w_resonator/2])
+## qubit
+model.geom("geom1").feature("wp2").geom().create("c_bulb", "Circle")
+model.geom("geom1").feature("wp2").geom().feature("c_bulb").set("r", r_bulb)
+model.geom("geom1").feature("wp2").geom().feature("c_bulb").set("pos", [x_bulb, 0])
+
+model.geom("geom1").feature("wp2").geom().create("r_bulb", "Rectangle")
+model.geom("geom1").feature("wp2").geom().feature("r_bulb").set("size", [x_qubit-x_bulb, h_bulb])
+model.geom("geom1").feature("wp2").geom().feature("r_bulb").set("pos", [x_bulb, -h_bulb/2])
+
+model.geom("geom1").feature("wp2").geom().create("r_cap1", "Rectangle")
+model.geom("geom1").feature("wp2").geom().feature("r_cap1").set("size", [w_cap_1, h_cap_1])
+model.geom("geom1").feature("wp2").geom().feature("r_cap1").set("pos", [x_qubit, -h_cap_1/2])
+
+model.geom("geom1").feature("wp2").geom().create("r_junction", "Rectangle")
+model.geom("geom1").feature("wp2").geom().feature("r_junction").set("size", [w_junction, h_junction])
+model.geom("geom1").feature("wp2").geom().feature("r_junction").set("pos", [x_qubit+w_cap_1, -h_junction/2])
+
+model.geom("geom1").feature("wp2").geom().create("r_cap2", "Rectangle")
+model.geom("geom1").feature("wp2").geom().feature("r_cap2").set("size", [w_cap_2, h_cap_2])
+model.geom("geom1").feature("wp2").geom().feature("r_cap2").set("pos", [x_qubit+w_cap_1+w_junction, -h_cap_2/2])
+
+model.geom("geom1").feature("wp2").geom().create("uni1", "Union")
+model.geom("geom1").feature("wp2").geom().feature("uni1").selection("input").set("c_bulb", "r_bulb", "r_cap1")
+model.geom("geom1").feature("wp2").geom().feature("uni1").set("intbnd", False)
+
+## resonator
+model.geom("geom1").feature("wp2").geom().create("r1", "Rectangle")
+model.geom("geom1").feature("wp2").geom().feature("r1").set("size", [l_resonator, w_resonator])
+model.geom("geom1").feature("wp2").geom().feature("r1").set("pos", [x_resonator, -w_resonator/2])
 
 # qubit drive
 model.geom("geom1").feature().create("cyl_qubit_drive1", "Cylinder")
@@ -148,28 +188,30 @@ model.physics("emw").create("pec2", "DomainPerfectElectricConductor", 3)
 model.physics("emw").feature("pec2").selection().set(2, 3, 6, 7)
 
 model.physics("emw").create("pec3", "PerfectElectricConductor", 2)
-model.physics("emw").feature("pec3").selection().set(43)
+model.physics("emw").feature("pec3").selection().set(29, 45, 46)
+
+model.physics("emw").create("lelement1", "LumpedElement", 2)
+model.physics("emw").feature("lelement1").set("LumpedElementType", "Inductor")
+model.physics("emw").feature("lelement1").set("Lelement", str(L_junction*1e9)+"[nH]")
+model.physics("emw").feature("lelement1").selection().set(44)
 
 model.physics("emw").create("sctr1", "Scattering", 2)
 model.physics("emw").feature("sctr1").selection().set(15)
 
 model.physics("emw").create("lport1", "LumpedPort", 2)
 model.physics("emw").feature("lport1").set("PortType", "Coaxial")
-model.view("view1").set("showDirections", False)
 model.physics("emw").feature("lport1").set("PortExcitation", "off")
 model.physics("emw").feature("lport1").selection().set(1)
 
 model.physics("emw").create("lport2", "LumpedPort", 2)
 model.physics("emw").feature("lport2").set("PortType", "Coaxial")
-model.view("view1").set("showDirections", False)
 model.physics("emw").feature("lport2").set("PortExcitation", "off")
-model.physics("emw").feature("lport2").selection().set(46)
+model.physics("emw").feature("lport2").selection().set(49)
 
 model.physics("emw").create("lport3", "LumpedPort", 2)
 model.physics("emw").feature("lport3").set("PortType", "Coaxial")
-model.view("view1").set("showDirections", False)
 model.physics("emw").feature("lport3").set("PortExcitation", "off")
-model.physics("emw").feature("lport3").selection().set(57)
+model.physics("emw").feature("lport3").selection().set(60)
 
 #%% mesh
 model.component("comp1").mesh().create("mesh1")
@@ -221,6 +263,7 @@ Q_1s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_1)
 Q_2s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_2)
 Q_3s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_3)
 
-print(Qs)
-print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
-print(Q_1s, Q_2s, Q_3s)
+print(freqs)
+# print(Qs)
+# print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
+# print(Q_1s, Q_2s, Q_3s)
