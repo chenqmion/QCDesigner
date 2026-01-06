@@ -15,7 +15,7 @@ r_cavity = 4.5e-3
 h_cavity = 50e-3
 
 r_stub = 1.5e-3
-h_stub = 15.05e-3
+h_stub = 15.053e-3
 
 r_pin = 0.5e-3
 r_bulk = 1.15e-3
@@ -45,10 +45,10 @@ h_cap_2 = 1000e-6
 
 w_junction = 150e-6
 h_junction = 50e-6
-L_junction = 3.05e-9
+L_junction = 3.04e-9
 
 x_resonator = x_qubit + (w_cap_1 + w_cap_2 + w_junction) + 850e-6
-l_resonator = 7250e-6
+l_resonator = 7241.59e-6
 w_resonator = 150e-6
 
 x_qubit_drive = r_cavity + 6e-3
