@@ -12,17 +12,13 @@ import mph
 phi0 = con.value('mag. flux quantum')/(2*con.pi)
 
 r_cavity = 4.5e-3
-h_cavity = 50e-3
+h_cavity = 45e-3
 
 r_stub = 1.5e-3
 h_stub = 15.053e-3
 
 r_pin = 0.5e-3
 r_bulk = 1.15e-3
-
-z_cavity_drive = 25e-3
-l_cavity_drive_1 = r_cavity + 5e-3
-l_cavity_drive_2 = 2e-3
 
 z_tube = np.copy(h_stub)
 r_tube = 2e-3
@@ -51,12 +47,16 @@ x_resonator = x_qubit + (w_cap_1 + w_cap_2 + w_junction) + 850e-6
 l_resonator = 7241.59e-6
 w_resonator = 150e-6
 
+z_cavity_drive = 25e-3
+l_cavity_drive_1 = r_cavity + 2e-3
+l_cavity_drive_2 = 2e-3
+
 x_qubit_drive = r_cavity + 6e-3
-l_qubit_drive_1 = r_tube + 5e-3
+l_qubit_drive_1 = r_tube + 2e-3
 l_qubit_drive_2 = 2e-3
 
 x_output = r_cavity + 12e-3
-l_output_1 = r_tube + 5e-3
+l_output_1 = r_tube + 2e-3
 l_output_2 = 2e-3
 
 #%%
@@ -195,8 +195,8 @@ model.physics("emw").feature("lelement1").set("LumpedElementType", "Inductor")
 model.physics("emw").feature("lelement1").set("Lelement", str(L_junction*1e9)+"[nH]")
 model.physics("emw").feature("lelement1").selection().set(44)
 
-model.physics("emw").create("sctr1", "Scattering", 2)
-model.physics("emw").feature("sctr1").selection().set(15)
+# model.physics("emw").create("sctr1", "Scattering", 2)
+# model.physics("emw").feature("sctr1").selection().set(15)
 
 model.physics("emw").create("lport1", "LumpedPort", 2)
 model.physics("emw").feature("lport1").set("PortType", "Coaxial")
@@ -288,10 +288,10 @@ kappa_2s = (-P_2)/(P_electric+P_magnetic)
 kappa_3s = (-P_3)/(P_electric+P_magnetic)
 
 Q_1s = (2*np.pi*freqs)/kappa_1s
-Q_2s = (2*np.pi*freqs)/kappa_1s
-Q_3s = (2*np.pi*freqs)/kappa_1s
+Q_2s = (2*np.pi*freqs)/kappa_2s
+Q_3s = (2*np.pi*freqs)/kappa_3s
 
 print(freqs)
 print(Qs)
 print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
-# print(Q_1s, Q_2s, Q_3s)
+print([1/kappa_1s, 1/kappa_2s, 1/kappa_3s])
