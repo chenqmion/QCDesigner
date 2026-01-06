@@ -20,7 +20,7 @@ h_stub = 15e-3
 r_pin = 0.5e-3
 r_bulk = 1.15e-3
 
-z_cavity_drive = 20e-3
+z_cavity_drive = 25e-3
 l_cavity_drive_1 = r_cavity + 5e-3
 l_cavity_drive_2 = 2e-3
 
