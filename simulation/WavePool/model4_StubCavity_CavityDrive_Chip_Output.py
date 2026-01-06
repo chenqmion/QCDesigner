@@ -215,7 +215,7 @@ model.physics("emw").feature("lport3").selection().set(60)
 
 #%% mesh
 model.component("comp1").mesh().create("mesh1")
-model.mesh("mesh1").autoMeshSize(3)
+model.mesh("mesh1").autoMeshSize(2)
 model.mesh("mesh1").run()
 
 #%% study
@@ -240,7 +240,7 @@ model.result("pg1").feature("arwv1").setIndex("expr", "emw.Ex", 0)
 model.result("pg1").feature("arwv1").setIndex("expr", "emw.Ey", 1)
 model.result("pg1").feature("arwv1").setIndex("expr", "emw.Ez", 2)
 model.result("pg1").feature("arwv1").set("placement", "elements")
-model.result("pg1").feature("arwv1").set("maxpointcount", '10000')
+model.result("pg1").feature("arwv1").set("maxpointcount", '100000')
 model.result("pg1").feature("arwv1").set("arrowlength", "logarithmic")
 model.result("pg1").feature("arwv1").set("color", "blue")
 
@@ -252,7 +252,7 @@ model.result("pg1").feature("arwv2").setIndex("expr", "emw.Hx", 0)
 model.result("pg1").feature("arwv2").setIndex("expr", "emw.Hy", 1)
 model.result("pg1").feature("arwv2").setIndex("expr", "emw.Hz", 2)
 model.result("pg1").feature("arwv2").set("placement", "elements")
-model.result("pg1").feature("arwv2").set("maxpointcount", '10000')
+model.result("pg1").feature("arwv2").set("maxpointcount", '100000')
 model.result("pg1").feature("arwv2").set("arrowlength", "logarithmic")
 model.result("pg1").feature("arwv2").set("color", "red")
 
@@ -283,11 +283,15 @@ P_1 = pymodel.evaluate('emw.Pport_1', dataset="Study 1//Solution 1")
 P_2 = pymodel.evaluate('emw.Pport_2', dataset="Study 1//Solution 1")
 P_3 = pymodel.evaluate('emw.Pport_3', dataset="Study 1//Solution 1")
 
-Q_1s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_1)
-Q_2s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_2)
-Q_3s = 2*np.pi*freqs*(P_electric+P_magnetic)/(-P_3)
+kappa_1s = (-P_1)/(P_electric+P_magnetic)
+kappa_2s = (-P_2)/(P_electric+P_magnetic)
+kappa_3s = (-P_3)/(P_electric+P_magnetic)
+
+Q_1s = (2*np.pi*freqs)/kappa_1s
+Q_2s = (2*np.pi*freqs)/kappa_1s
+Q_3s = (2*np.pi*freqs)/kappa_1s
 
 print(freqs)
-# print(Qs)
-# print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
+print(Qs)
+print(1/(1/Q_1s + 1/Q_2s + 1/Q_3s))
 # print(Q_1s, Q_2s, Q_3s)
