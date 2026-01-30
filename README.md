@@ -21,4 +21,6 @@ The following software interfaces can be automatelly called for electromagnetic 
 The default finite element method (FEM) engine for circuit-in-package simulation and 3D cavity design.
 
 ### [QCDAds](https://github.com/chenqmion/QCDAds)
-The method of moments (Momentum) engine that for simulating linear-circuit spectrum.
+The method of moments (Momentum) engine for simulating linear-circuit spectrum.
+
+## Application note
