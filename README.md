@@ -1,7 +1,8 @@
 # QCDesigner 
-This is an EDA software for superconducting quantum circuits. Having used it for years, I am now integrating its components to develop a tool that will free up human resources in circuit design and simulation.
+This is an EDA software for superconducting quantum circuits.
 
 ## Update
+* **20260131** Uploaded QCDComsol and QCDAds (not linked to QCDesigner).
 * **20250912** Published V0.1.
 
 ## Layout design
@@ -13,5 +14,11 @@ Equations are valuable resources for making a design. 2D calculators use simplif
 ### Auto-router
 Not all parts of a chip need careful design. Just focusing on the important parts, and auto-router will do the rest.
 
-## COMSOL simulation
-We can directly call COMSOL for simulation via the package MPh.
+## Simulation
+The following software interfaces can be automatelly called for electromagnetic simulation:
+
+### [QCDComsol](https://github.com/chenqmion/QCDComsol)
+The default finite element method (FEM) engine for circuit-in-package simulation and 3D cavity design.
+
+### [QCDAds](https://github.com/chenqmion/QCDAds)
+The method of moments (Momentum) engine that for simulating linear-circuit spectrum.
