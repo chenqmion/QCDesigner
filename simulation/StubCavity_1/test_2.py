@@ -32,10 +32,15 @@ stub = geometry.create('Cylinder')
 stub.property('r', r_stub)
 stub.property('h', h_stub)
 
-diff1 = model.java.geom("geom1").feature().create("diff1", "Difference")
-diff1.selection("input").set("cyl1")
-diff1.selection("input2").set("cyl2")
-diff1.set("keepsubtract", True)
+# diff1 = model.java.geom("geom1").feature().create("diff1", "Difference")
+# diff1.selection("input").set("cyl1")
+# diff1.selection("input2").set("cyl2")
+# diff1.set("keepsubtract", True)
+
+diff1 = geometry.create('Difference', name='dif1')
+diff1.java.selection('input').set(['cyl1'])
+diff1.java.selection('input2').set(['cyl2'])
+diff1.java.set("keepsubtract", True)
 
 model.build(geometry)
 
