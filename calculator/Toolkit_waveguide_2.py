@@ -89,6 +89,8 @@ class MyWaveguide:
 #%% example
 x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=8.0E9*(2*const.pi), h1 = 675E-6)
 
+print(x)
+
 # x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=5.0E9*(2*const.pi))
 
 # x = MyWaveguide(a=0.01E-6, b=2000E-6, w0=8.0E9*(2*const.pi), h1 = 675E-6)

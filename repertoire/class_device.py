@@ -43,10 +43,10 @@ class device():
                 elif axis == 'y':
                     val_port = aux_poly.reflect([device.ports[key_port].x], axis='y', value=np.real(ref_port))
                 else:
-                    val_port = [device.ports[key_port].x]
+                    val_port = device.ports[key_port].x
 
-                _port = aux_poly.rotate(val_port, origin=ref_port, degree=degree)
-                new_ports[key_port] = handshake(x=_port + d_vector, angle=deg_port+degree)
+                _port = aux_poly.rotate(val_port, origin=ref_port, degree=degree).item()
+                new_ports[key_port] = handshake(x=_port + d_vector, angle=device.ports[key_port].angle+degree)
 
         return new_ports
 
@@ -70,11 +70,12 @@ class device():
     def add_port(self, name, ref_port, degree=0):
         self.ports[name] = handshake(x=ref_port, angle = degree)
 
-    def terminate_port(self, num_port, width=22, gap=6, degree=0, layer='Nb_inv'):
+    def terminate_port(self, name_port, width=22, gap=6, degree=0, layer='Nb_inv'):
         poly_1 = [-1j * width / 2]
         poly_1.append(1j * width / 2)
         poly_1.append(gap + 1j * width / 2)
         poly_1.append(gap - 1j * width / 2)
 
-        ref_port = self.ports[str(num_port)]
-        self.add_geometry(layer, [poly_1], ref=ref_port, degree=degree)
+        ref_port = self.ports[name_port].x
+        deg_port = self.ports[name_port].angle
+        self.add_geometry(layer, [poly_1], ref=ref_port, degree=deg_port)

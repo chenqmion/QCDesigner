@@ -94,7 +94,7 @@ class chip(device):
             trap_.append(1 / 2 - 1j / 2)
             trap_ = np.array(trap_) * self.trap_size[0]
 
-            pt_off = 1.2e3 * (1 + 1j)
+            pt_off = 650 * (1 + 1j)
             Nx = int((self.chip_size[0] - 2 * np.real(pt_off)) / self.trap_size[1]) + 1
             Ny = int((self.chip_size[1] - 2 * np.imag(pt_off)) / self.trap_size[1]) + 1
 

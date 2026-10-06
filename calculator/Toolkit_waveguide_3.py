@@ -88,7 +88,11 @@ class MyWaveguide:
             self.w0 = const.pi*self.v_phase/self.l
 
 #%% example
-x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=8.0E9*(2*const.pi), h1 = 675E-6)
+x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=4.0E9*(2*const.pi), h1 = 725E-6)
+print(x)
+
+x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=8.43E9*(2*const.pi), h1 = 725E-6)
+print(x)
 
 # x = MyWaveguide(a=10.0E-6, b=6.0E-6, w0=5.0E9*(2*const.pi))
 

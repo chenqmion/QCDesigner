@@ -8,8 +8,9 @@ sys.path.append('../')
 
 import aux_poly
 
-def decorator(die_size=(15e3, 15e3),
-              chip_size=(10e3, 10e3)
+def alignment(die_size=(15e3, 15e3),
+              chip_size=(10e3, 10e3),
+              blade_width=180,
               ):
     geometry_1 = []
 
@@ -39,6 +40,23 @@ def decorator(die_size=(15e3, 15e3),
         poly_2_4 = aux_poly.reflect(poly_2_3, axis='y', value=chip_size[0] / 2)
 
         geometry_1 += [poly_2_1, poly_2_2, poly_2_3, poly_2_4]
+
+    poly_3 = []
+    poly_3.append(-500)
+    poly_3.append(-500 + 1j * blade_width/2)
+    poly_3.append(500 + 1j * blade_width/2)
+    poly_3.append(500)
+
+    for num_1 in range(1, 9):
+        poly_3_1 = np.array(poly_3) - 1j* blade_width/2 + num_1 * chip_size[0] / 9
+        poly_3_2 = aux_poly.reflect(poly_3_1, axis='x', value=chip_size[1] / 2)
+
+        poly_3_3 = np.array(poly_3) * np.exp(-1j * np.pi / 2) - blade_width/2 + 1j * num_1 * \
+                   chip_size[1] / 9
+        poly_3_4 = aux_poly.reflect(poly_3_3, axis='y', value=chip_size[0] / 2)
+
+        geometry_1 += [poly_3_1, poly_3_2, poly_3_3, poly_3_4]
+
 
     return geometry_1
 

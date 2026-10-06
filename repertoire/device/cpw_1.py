@@ -17,7 +17,7 @@ import aux_poly
 #%% design
 def new_device(
         path=[0, 1000, 1500 - 500j, 1000 - 1000j, 0 - 1000j, -1000 - 1000j, -500 - 1500j, -1000 - 2000j, 0 - 2000j],
-        a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nv_inv'):
+        a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
     path = np.array(path, dtype=complex)
     idx_keep = (np.diff(path) != 0 + 0j)
     idx_keep = np.insert(idx_keep, [0], [True])
@@ -71,7 +71,8 @@ def new_device(
 
         ph_0 = np.angle(-dx_0)
         ph_1 = np.angle(-dx_1)
-        N = int(np.abs((ph_1 - ph_0) / (np.pi / 36)))
+        # N = int(np.abs((ph_1 - ph_0) / (np.pi / 36)))
+        N = max(2, int(np.ceil(np.abs(ph_1 - ph_0) / (np.pi / 36))) + 1)
 
         ph_list = np.linspace(ph_0, ph_1, N)
         curve_1 = (xc + 1j * yc) + r * np.exp(1j * ph_list)

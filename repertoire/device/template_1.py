@@ -25,13 +25,15 @@ def new_device(name=device_name,
                die_size=(15e3, 15e3),
                chip_size=(10e3, 10e3),
                trap_size=(20, 100),
+               blade_width = 180,
                # launcher
-               launchers=['launcher_--', 'launcher_0-', 'launcher_-+', 'launcher_-0', 'launcher_++', 'launcher_0+',
+               launchers=['launcher_--', 'launcher_0-',
+                          'launcher_-+', 'launcher_-0',
+                          'launcher_++', 'launcher_0+',
                           'launcher_+-', 'launcher_+0'],
-               pad=400,
-               gap=240,
-               taper_length=400,
-               gnd_slot=350,
+               pad=250,
+               taper_length=250,
+               gnd_slot=250,
                # general
                a=10, b=6
                ):
@@ -42,7 +44,7 @@ def new_device(name=device_name,
     poly_1 = []
     poly_1.append(0)
     poly_1.append(1j * chip_size[1])
-    poly_1.append(chip_size[0] + 1j * chip_size[1])
+    poly_1.append(chip_size[0]+ 1j * chip_size[1])
     poly_1.append(chip_size[0])
 
     poly_2 = []
@@ -56,8 +58,9 @@ def new_device(name=device_name,
     poly_1 = np.squeeze(aux_poly.subtract(poly_2, poly_1))
 
     # %% decorator
-    geomrtey_2 = aux_marker.decorator(die_size=die_size,
-                                      chip_size=chip_size)
+    geomrtey_2 = aux_marker.alignment(die_size=die_size,
+                                      chip_size=chip_size,
+                                      blade_width=blade_width)
     for poly_2 in geomrtey_2:
         poly_1 = np.squeeze(aux_poly.subtract(poly_1, poly_2))
 
@@ -78,12 +81,13 @@ def new_device(name=device_name,
     # chip_1.add_geometry('remarks', geometry_logo, ref=position_list[0])
 
     # %% launcher
-    poly_2 = [0, 2j * gnd_slot, 2 * gnd_slot]
+    poly_2 = [0, 1j * (700 - blade_width/np.sqrt(2)), (700 - blade_width/np.sqrt(2))]
     position_2 = [0, 1j * chip_size[1], (chip_size[0] + 1j * chip_size[1]), chip_size[0]]
     for num_2 in range(4):
         chip_1.add_geometry('remarks', [poly_2], ref=position_2[num_2], degree=-90 * num_2,
                             axis='none', ref_port=0)
 
+    gap = pad * b/a
     launcher_1 = launcher.new_device(pad=pad,
                                      gap=gap,
                                      taper_length=taper_length,
@@ -98,16 +102,20 @@ def new_device(name=device_name,
 
     names_1 += ['launcher_--', 'launcher_-+', 'launcher_++', 'launcher_+-']
     position_1 += list(
-        np.array(position_2) + (1 + 1 / np.sqrt(2)) * gnd_slot * np.array([1 + 1j, 1 - 1j, -1 - 1j, -1 + 1j]))
+        np.array(position_2) + (350 + gnd_slot / np.sqrt(2)) * np.array([1 + 1j, 1 - 1j, -1 - 1j, -1 + 1j]))
     degree_1 += list(45 - 90 * np.arange(4))
 
     for launcher_name in launchers:
         idx_1 = names_1.index(launcher_name)
-        xx = chip_1.combine_device(launcher_1, ref=position_1[idx_1], degree=degree_1[idx_1], axis='none',
+        new_ports = chip_1.combine_device(launcher_1, ref=position_1[idx_1], degree=degree_1[idx_1], axis='none',
                                    port='1')
+
+        print(new_ports['1'].x)
+
+        chip_1.add_port(launcher_name, new_ports['2'].x, new_ports['2'].angle)
 
     return chip_1
 
 #%% example
 x = new_device(time=time_stamp)
-x.gen_gds(marker=True, flux_trap=True, set_zero=True)
+x.gen_gds(marker=True, flux_trap=True, set_zero=False)
