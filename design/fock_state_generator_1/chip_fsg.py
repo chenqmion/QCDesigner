@@ -85,7 +85,7 @@ path.append(ports_fsg_1['output'].x)
 cpw_output = cpw.new_device(path=path)
 chip_1.combine_device(cpw_output, degree=0, axis='none', port='2')
 
-_port_x = ports_fsg_1['qubit_90'].x + (120 + 50j)
+_port_x = ports_fsg_1['qubit_90'].x + (150 + 30j)
 path = [chip_1.ports['launcher_++'].x]
 path.append(path[-1] + (-1-1j) * 300)
 path.append(_port_x.real + 1j*path[-1].imag)
@@ -98,7 +98,7 @@ chip_1.combine_device(cpw_qubit, degree=0, axis='none', port='2')
 fsg_2 = fsg.new_device(length_storage=6300,
                        length_output=6060,
                        cap_width=[98, 48, 48],
-                       cap_length=[105, 145, 40],
+                       cap_length=[115, 135, 40],
                        cross_width=[48, 24, 48, 24],
                        a=10,
                        b=6,
@@ -115,7 +115,7 @@ path.append(ports_fsg_2['output'].x)
 cpw_output_2 = cpw.new_device(path=path)
 chip_1.combine_device(cpw_output_2, degree=0, axis='none', port='2')
 
-_port_x = ports_fsg_2['qubit_270'].x + (-120 - 50j)
+_port_x = ports_fsg_2['qubit_270'].x + (-150 - 30j)
 path = [chip_1.ports['launcher_--'].x]
 path.append(path[-1] + (1+1j) * 300)
 path.append(_port_x.real + 1j*path[-1].imag)

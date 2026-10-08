@@ -50,7 +50,7 @@ def new_device(
     chip_1 = device()
 
     #%% storage cavity
-    cavity_1 = lambda4.new_device(length=length_storage, height=1500, width=100, N=10,
+    cavity_1 = lambda4.new_device(length=length_storage, height=1500, width=50, N=10,
                    a=a, b=b, r=r, d_rad=d_rad, layer=layer)
 
     ports_cavity_1 = chip_1.combine_device(cavity_1, ref= 0, degree=90, axis='none', port='couple')
