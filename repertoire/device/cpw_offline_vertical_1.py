@@ -50,7 +50,7 @@ def new_device(
     return cpw_1
 
 #%% example
-x = new_device(length=1050)
+x = new_device(length=1050, N=5)
 
 chip_1 = chip(name=device_name,
               time=time_stamp,

@@ -1,4 +1,12 @@
 import gdsfactory as gf
+from gdsfactory.generic_tech import get_generic_pdk, LAYER
+
+get_generic_pdk().activate()
+
+
+# Optional: import layer constants
+from gdsfactory.generic_tech import LAYER
+
 
 import numpy as np
 

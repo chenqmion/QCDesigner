@@ -16,7 +16,7 @@ import aux_poly
 
 #%% design
 def new_device(
-        width=(30, 30),
+        width=(40, 30),
         gap=(6, 12),
         length=(100, 50),
         a=10,

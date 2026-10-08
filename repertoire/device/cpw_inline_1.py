@@ -73,7 +73,7 @@ def new_device(
 
 #%% example
 x = new_device(pt_start=0, pt_stop=1050,
-               length=1500, N=1)
+               length=1500, N=2)
 
 chip_1 = chip(name=device_name,
               time=time_stamp,
