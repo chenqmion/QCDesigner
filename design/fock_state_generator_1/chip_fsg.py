@@ -125,10 +125,10 @@ cpw_qubit_2.terminate_port('2', width=22, gap=6, degree = 90)
 chip_1.combine_device(cpw_qubit_2, degree=0, axis='none', port='2')
 
 #%% source 3
-fsg_3 = fsg.new_device(length_storage=6600,
+fsg_3 = fsg.new_device(length_storage=6900,
                        length_output=6060,
                        cap_width=[98, 48, 48],
-                       cap_length=[105, 145, 40],
+                       cap_length=[125, 125, 40],
                        cross_width=[48, 24, 48, 24],
                        a=10,
                        b=6,
@@ -146,10 +146,10 @@ cpw_output_3 = cpw.new_device(path=path)
 chip_1.combine_device(cpw_output_3, degree=0, axis='none', port='2')
 
 #%% source 4
-fsg_4 = fsg.new_device(length_storage=7000,
+fsg_4 = fsg.new_device(length_storage=7800,
                        length_output=6060,
                        cap_width=[98, 48, 48],
-                       cap_length=[105, 145, 40],
+                       cap_length=[145, 105, 40],
                        cross_width=[48, 24, 48, 24],
                        a=10,
                        b=6,
