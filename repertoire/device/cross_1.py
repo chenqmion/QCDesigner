@@ -89,30 +89,31 @@ def new_device(angle=(0, 90, 180, 270),
     return cross
 
 #%% example
-x = new_device(angle=(0, 180, 270),
-               length=(100, 100, 100),
-               a_list=(5, 10, 5),
-               b_list=(5, 6, 5),
-               c_list=(0, 0, 0),
-               layer='Nb_inv')
+if __name__ == '__main__':
+    x = new_device(angle=(0, 180, 270),
+                   length=(100, 100, 100),
+                   a_list=(5, 10, 5),
+                   b_list=(5, 6, 5),
+                   c_list=(0, 0, 0),
+                   layer='Nb_inv')
 
-chip_1 = chip(name=device_name,
-              time=time_stamp,
-              logo='QCD',
-              die_size=(15e3, 15e3),
-              chip_size=(10e3, 10e3),
-              trap_size=(20, 100))
+    chip_1 = chip(name=device_name,
+                  time=time_stamp,
+                  logo='QCD',
+                  die_size=(15e3, 15e3),
+                  chip_size=(10e3, 10e3),
+                  trap_size=(20, 100))
 
-chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='0')
-chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+    chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='0')
+    chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
 
-# x = cap()
-#
-# chip_1 = design(name=device_name,
-#               time=time_stamp,
-#               logo='QCD',
-#               die_size=(15e3, 15e3),
-#               chip_size=(10e3, 10e3),
-#               trap_size=(20, 100))
-# chip_1.add_device('cross_cap', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='inside')
-# chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+    # x = cap()
+    #
+    # chip_1 = design(name=device_name,
+    #               time=time_stamp,
+    #               logo='QCD',
+    #               die_size=(15e3, 15e3),
+    #               chip_size=(10e3, 10e3),
+    #               trap_size=(20, 100))
+    # chip_1.add_device('cross_cap', x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='inside')
+    # chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)

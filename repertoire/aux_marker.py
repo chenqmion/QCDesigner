@@ -15,14 +15,14 @@ def alignment(die_size=(15e3, 15e3),
     geometry_1 = []
 
     poly_1 = []
-    poly_1.append(-100 - 100j)
-    poly_1.append(-100 + 1000j)
-    poly_1.append(100 + 1000j)
-    poly_1.append(100 + 100j)
-    poly_1.append(1000 + 100j)
-    poly_1.append(1000 - 100j)
+    poly_1.append(0)
+    poly_1.append(1200j)
+    poly_1.append(200 + 1000j)
+    poly_1.append(200 + 200j)
+    poly_1.append(1000 + 200j)
+    poly_1.append(1200)
 
-    poly_1 = np.array(poly_1) + 500 * (-1 - 1j)
+    poly_1 = np.array(poly_1) + 2e3 * (-1 - 1j)
     geometry_1.append(poly_1)
 
     poly_2 = []
@@ -83,7 +83,7 @@ def text(str_text,
 def marker(layer_count=3,
            chip_size=(10e3, 10e3)
            ):
-    pt_off = 2200 + 1j * 400
+    pt_off = 1400 + 1j * 400
     marker_geometry = []
 
     poly_1 = []
@@ -124,14 +124,18 @@ def marker(layer_count=3,
         marker_geometry3 = []
 
         poly_1 = []
-        poly_1.append((-10 + 90 * (num1 + 2))
-                      + 1j * (-10 + 90 * (num1 + 2)))
-        poly_1.append((-10 + 90 * (num1 + 2))
-                      + 1j * (10 + 90 * (num1 + 2)))
-        poly_1.append((10 + 90 * (num1 + 2))
-                      + 1j * (10 + 90 * (num1 + 2)))
-        poly_1.append((10 + 90 * (num1 + 2))
-                      + 1j * (-10 + 90 * (num1 + 2)))
+        # poly_1.append((-10 + 90 * (num1 + 2))
+        #               + 1j * (-10 + 90 * (num1 + 2)))
+        # poly_1.append((-10 + 90 * (num1 + 2))
+        #               + 1j * (10 + 90 * (num1 + 2)))
+        # poly_1.append((10 + 90 * (num1 + 2))
+        #               + 1j * (10 + 90 * (num1 + 2)))
+        # poly_1.append((10 + 90 * (num1 + 2))
+        #               + 1j * (-10 + 90 * (num1 + 2)))
+        poly_1.append((-10 + 200 * (num1 + 1)) - 10j)
+        poly_1.append((-10 + 200 * (num1 + 1)) + 10j)
+        poly_1.append((10 + 200 * (num1 + 1)) + 10j)
+        poly_1.append((10 + 200 * (num1 + 1)) - 10j)
         poly_1 = np.array(poly_1) + pt_off
 
         poly_2 = aux_poly.reflect(poly_1, axis='x', value=chip_size[1] / 2)
@@ -146,13 +150,14 @@ def marker(layer_count=3,
         # marker_geometry[0] += marker_geometry3
 
         marker_geometry4 = []
-        ref0 = pt_off + (90 * (num1 + 2) + 30) + 1j * (90 * (num1 + 2) - 90)
+        # ref0 = pt_off + (90 * (num1 + 2) + 30) + 1j * (90 * (num1 + 2) - 90)
+        ref0 = pt_off + (200 * (num1 + 1)) - 70j
         pts = [ref0,
                1j * chip_size[1] + ref0.conjugate(),
                (chip_size[0] + 1j * chip_size[1]) - ref0,
                chip_size[0] - ref0.conjugate()]
 
-        geometry_4 = text(str(num1 + 1), size=1e2)
+        geometry_4 = text(str(num1 + 1), size=60)
         for num_2 in range(4):
             marker_geometry4.append(geometry_4[0] + pts[num_2])
         marker_geometry[-1] += marker_geometry4

@@ -33,8 +33,11 @@ client = ComsolClient(comsol_root)
 # model = client.load_model("fsg_261008_source_2")
 # do_epr(model)
 
-model = client.load_model("fsg_261008_source_3")
-do_epr(model)
-
+# model = client.load_model("fsg_261008_source_3")
+# do_epr(model)
+#
 # model = client.load_model("fsg_261008_source_4")
 # do_epr(model)
+
+model = client.load_model("fsg_261008")
+do_epr(model)

@@ -24,7 +24,7 @@ def new_device(name=device_name,
                logo='QCD',
                die_size=(15e3, 15e3),
                chip_size=(10e3, 10e3),
-               trap_size=(20, 100),
+               trap_size=(5, 20),
                blade_width = 180,
                # launcher
                launchers=['launcher_--', 'launcher_0-',
@@ -35,7 +35,8 @@ def new_device(name=device_name,
                taper_length=250,
                gnd_slot=250,
                # general
-               a=10, b=6
+               a=10, b=6,
+              flag_FEM=False
                ):
     chip_1 = chip(name=name, time=time, logo=logo,
                   die_size=die_size, chip_size=chip_size, trap_size=trap_size)
@@ -91,7 +92,7 @@ def new_device(name=device_name,
     launcher_1 = launcher.new_device(pad=pad,
                                      gap=gap,
                                      taper_length=taper_length,
-                                     a=a, b=b)
+                                     a=a, b=b, flag_FEM=flag_FEM)
 
     names_1 = ['launcher_0-', 'launcher_-0', 'launcher_0+', 'launcher_+0']
     position_1 = [chip_size[0] / 2 + 1j * gnd_slot,
@@ -117,5 +118,6 @@ def new_device(name=device_name,
     return chip_1
 
 #%% example
-x = new_device(time=time_stamp)
-x.gen_gds(marker=True, flux_trap=True, set_zero=False)
+if __name__ == '__main__':
+    x = new_device(time=time_stamp)
+    x.gen_gds(marker=True, flux_trap=True, set_zero=False)
