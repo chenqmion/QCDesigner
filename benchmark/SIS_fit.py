@@ -11,8 +11,8 @@ from class_SIS import SIS
 
 # %%
 # folder_name = 'SIS_250717'
-# folder_name = 'Wavepool_260811_v1'
-folder_name = 'Wavepool_260811_v2'
+folder_name = 'Wavepool_260811_v1'
+# folder_name = 'Wavepool_260811_v2'
 file_name = 'raw' + folder_name[len(folder_name.split('_')[0]):] + '.xlsx'
 base_path = Path(__file__).parent / folder_name
 
