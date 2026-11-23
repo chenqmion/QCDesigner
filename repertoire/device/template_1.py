@@ -1,31 +1,30 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device
 from class_chip import chip
 import aux_poly
 import aux_marker
 
-#%% dependence
+# %% dependence
 import launcher_1 as launcher
 
-#%% design
+
+# %% design
 def new_device(name=device_name,
                time=time_stamp,
                logo='QCD',
                die_size=(15e3, 15e3),
                chip_size=(10e3, 10e3),
                trap_size=(5, 20),
-               blade_width = 180,
+               blade_width=180,
                # launcher
                launchers=['launcher_--', 'launcher_0-',
                           'launcher_-+', 'launcher_-0',
@@ -45,7 +44,7 @@ def new_device(name=device_name,
     poly_1 = []
     poly_1.append(0)
     poly_1.append(1j * chip_size[1])
-    poly_1.append(chip_size[0]+ 1j * chip_size[1])
+    poly_1.append(chip_size[0] + 1j * chip_size[1])
     poly_1.append(chip_size[0])
 
     poly_2 = []
@@ -62,6 +61,7 @@ def new_device(name=device_name,
     geomrtey_2 = aux_marker.alignment(die_size=die_size,
                                       chip_size=chip_size,
                                       blade_width=blade_width)
+
     for poly_2 in geomrtey_2:
         poly_1 = np.squeeze(aux_poly.subtract(poly_1, poly_2))
 
@@ -111,13 +111,13 @@ def new_device(name=device_name,
         new_ports = chip_1.combine_device(launcher_1, ref=position_1[idx_1], degree=degree_1[idx_1], axis='none',
                                    port='1')
 
-        print(new_ports['1'].x)
 
         chip_1.add_port(launcher_name, new_ports['2'].x, new_ports['2'].angle)
 
     return chip_1
 
-#%% example
+
+# %% example
 if __name__ == '__main__':
     x = new_device(time=time_stamp)
     x.gen_gds(marker=True, flux_trap=True, set_zero=False)

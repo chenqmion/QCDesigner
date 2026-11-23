@@ -1,12 +1,13 @@
 import sys
 
-import gdsfactory as gf
 import numpy as np
+import klayout.db as db
 
 sys.path.append('../')
 # from class_chip import design
 
 import aux_poly
+
 
 def alignment(die_size=(15e3, 15e3),
               chip_size=(10e3, 10e3),
@@ -48,7 +49,7 @@ def alignment(die_size=(15e3, 15e3),
     poly_3.append(500)
 
     for num_1 in range(1, 9):
-        poly_3_1 = np.array(poly_3) - 1j* blade_width/2 + num_1 * chip_size[0] / 9
+        poly_3_1 = np.array(poly_3) - 1j * blade_width/2 + num_1 * chip_size[0] / 9
         poly_3_2 = aux_poly.reflect(poly_3_1, axis='x', value=chip_size[1] / 2)
 
         poly_3_3 = np.array(poly_3) * np.exp(-1j * np.pi / 2) - blade_width/2 + 1j * num_1 * \
@@ -57,27 +58,52 @@ def alignment(die_size=(15e3, 15e3),
 
         geometry_1 += [poly_3_1, poly_3_2, poly_3_3, poly_3_4]
 
-
     return geometry_1
 
 
-def text(str_text,
-         size=3e2):
-    text_geometry = []
+def text(str_text, size=2e2):
+    dbu = 1e-3
+    gen = db.TextGenerator.default_generator()
+    mag = 1.42857 * size
 
+    text_geometry = []
     x1 = 0
     for str_word in str_text:
-        poly_name = gf.components.text(str_word, size, (x1, 0), layer=0)
+        region = gen.text(str_word, dbu, mag)
 
-        for poly in poly_name.get_polygons_points()[0]:
-            text_geometry.append(np.array(poly)[:, 0] + 1j * np.array(poly)[:, 1])
+        word_polys = []
+        for p in region.each():
+            p.resolve_holes()
+            pts = np.array([(pt.x * dbu, pt.y * dbu) for pt in p.each_point_hull()])
+            word_polys.append((pts[:, 0] + x1) + 1j * pts[:, 1])
 
-        xm = [np.max(val.real) for val in text_geometry]
-        x1 = np.max(xm)
+        text_geometry += word_polys
 
-    text_geometry2 = [val_poly - (x1 + 1j * size) / 2 for val_poly in text_geometry]
+        xm = [val.real.max() for val in text_geometry]
+        x1 = np.max(xm) + mag * 0.1
+
+    x1_total = np.max([val.real.max() for val in text_geometry])
+    text_geometry2 = [val_poly - (x1_total + 1j * size) / 2 for val_poly in text_geometry]
 
     return text_geometry2
+
+# def text(str_text,
+#          size=3e2):
+#     text_geometry = []
+#
+#     x1 = 0
+#     for str_word in str_text:
+#         poly_name = gf.components.text(str_word, size, (x1, 0), layer=0)
+#
+#         for poly in poly_name.get_polygons_points()[0]:
+#             text_geometry.append(np.array(poly)[:, 0] + 1j * np.array(poly)[:, 1])
+#
+#         xm = [np.max(val.real) for val in text_geometry]
+#         x1 = np.max(xm)
+#
+#     text_geometry2 = [val_poly - (x1 + 1j * size) / 2 for val_poly in text_geometry]
+#
+#     return text_geometry2
 
 
 def marker(layer_count=3,
@@ -161,7 +187,5 @@ def marker(layer_count=3,
         for num_2 in range(4):
             marker_geometry4.append(geometry_4[0] + pts[num_2])
         marker_geometry[-1] += marker_geometry4
-
-        print(str(num1 + 1))
 
     return marker_geometry

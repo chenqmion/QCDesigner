@@ -1,23 +1,21 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device
 from class_chip import chip
-import aux_poly
 
-#%% dependence
+# %% dependence
 import cpw_1 as cpw
 
-#%% design
+
+# %% design
 def new_device(
         pt_start=0, pt_stop=1000, length=3000, N=0, flip=False, zero_pre=False,
         a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
@@ -71,7 +69,8 @@ def new_device(
     path = np.array(path) * np.exp(1j * ph_x) + pt_start
     return cpw.new_device(path, a=a, b=b, r=r, d_rad=d_rad, layer=layer)
 
-#%% example
+
+# %% example
 if __name__ == '__main__':
     x = new_device(pt_start=0, pt_stop=1050,
                    length=1500, N=2)

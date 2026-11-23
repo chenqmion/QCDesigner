@@ -1,24 +1,22 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
 device_name = os.path.basename(__file__)[:-3]
 
 sys.path.append('../')
-from class_device import device, handshake
 from class_chip import chip
-import aux_poly
 
-#%% dependence
+# %% dependence
 import cpw_1 as cpw
 import cpw_inline_1 as cpw_inline
 
-#%% design
+
+# %% design
 def new_device(length=5000, height=1000, width=200, N=0,
                a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
     # PRL 111, 080502 (2013)
@@ -58,7 +56,8 @@ def new_device(length=5000, height=1000, width=200, N=0,
 
     return cpw_1
 
-#%% example
+
+# %% example
 if __name__ == '__main__':
     x = new_device(N=5)
 

@@ -1,14 +1,5 @@
-import gdsfactory as gf
-from gdsfactory.generic_tech import get_generic_pdk, LAYER
-
-get_generic_pdk().activate()
-
-
-# Optional: import layer constants
-from gdsfactory.generic_tech import LAYER
-
-
 import numpy as np
+import klayout.db as db
 
 
 # %%
@@ -26,21 +17,20 @@ def reflect(poly, axis='x', value=0):
 
 
 def subtract(poly_1, poly_2):
-    device_1 = gf.Component()
-    _poly_1 = device_1.add_polygon(np.array([np.real(poly_1), np.imag(poly_1)]).T, layer=(0, 0))
-    area_1 = gf.Region(_poly_1.polygon)
+    dbu = 1e-3
 
-    _poly_2 = device_1.add_polygon(np.array([np.real(poly_2), np.imag(poly_2)]).T, layer=(0, 0))
-    area_2 = gf.Region(_poly_2.polygon)
+    def to_region(poly):
+        pts = [db.Point(round(np.real(z) * 1/dbu), round(np.imag(z) * 1/dbu))
+               for z in poly]
+        return db.Region(db.Polygon(pts))
 
-    device_2 = gf.Component()
-    area_3 = area_1 - area_2
-    device_2.add_polygon(area_3, layer=(0, 0))
-    _poly_3 = device_2.get_polygons_points()
+    area_3 = to_region(poly_1) - to_region(poly_2)
 
     geometry_3 = []
-    for num_poly, val_poly in enumerate(list(_poly_3.values())[0]):
-        geometry_3.append(val_poly[:, 0] + 1j * val_poly[:, 1])
+    for p in area_3.each():
+        p.resolve_holes()
+        pts = np.array([(pt.x * dbu, pt.y * dbu) for pt in p.each_point_hull()])
+        geometry_3.append(pts[:, 0] + 1j * pts[:, 1])
 
     return geometry_3
 

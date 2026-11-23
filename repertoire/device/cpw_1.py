@@ -1,9 +1,8 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -12,9 +11,10 @@ device_name = os.path.basename(__file__)[:-3]
 sys.path.append('../')
 from class_device import device
 from class_chip import chip
-import aux_poly
+import aux_route
 
-#%% design
+
+# %% design
 def new_device(
         path=[0, 1000, 1500 - 500j, 1000 - 1000j, 0 - 1000j, -1000 - 1000j, -500 - 1500j, -1000 - 2000j, 0 - 2000j],
         a=10, b=6, r=50, d_rad=np.pi / 36, layer='Nb_inv'):
@@ -29,8 +29,6 @@ def new_device(
     idx_keep = (np.abs(np.diff(direction_list)) >= 1e-3)
     idx_keep = np.insert(idx_keep, [0, len(idx_keep)], [True, True])
     path = path[idx_keep]
-
-    print(np.diff(direction_list))
 
     start_list = np.array(path)[:-2]
     mid_list = np.array(path)[1:-1]
@@ -95,6 +93,16 @@ def new_device(
 
     return cpw_1
 
+
+def route(start, stop, waypoints=(), a=10, b=6, r=50, straight=0, d_rad=np.pi / 36, layer='Nb_inv'):
+    """
+    CPW between two ports (handshake); the path is computed by aux_route.route (see there for the rules).
+    The result is in the same coordinate frame as start/stop, i.e. combine it with ref=None, degree=0.
+    """
+    path = aux_route.route(start, stop, waypoints=waypoints, r=r, straight=straight)
+    return new_device(path, a=a, b=b, r=r, d_rad=d_rad, layer=layer)
+
+
 def cpw_straight(pt_start, pt_stop, a=10, b=6):
     d0 = pt_stop - pt_start
     dx_0 = np.sign(d0.imag - 1j * d0.real)
@@ -144,7 +152,8 @@ def cpw_curve(pt_start, pt_ori, rad, a=10, b=6, d_rad=np.pi / 36):
 
     return cpw_geometry
 
-#%% example
+
+# %% example
 if __name__ == '__main__':
     path = [0.00000000e+00 + 0.j, 100+100j, 200+100j, 300+0j]
 

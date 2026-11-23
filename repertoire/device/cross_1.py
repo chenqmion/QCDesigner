@@ -1,9 +1,8 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -14,7 +13,8 @@ from class_device import device
 from class_chip import chip
 import aux_poly
 
-#%% design
+
+# %% design
 def new_device(angle=(0, 90, 180, 270),
                length=(130, 130, 130, 130),
                a_list=(8, 8, 8, 8),
@@ -88,7 +88,8 @@ def new_device(angle=(0, 90, 180, 270),
 
     return cross
 
-#%% example
+
+# %% example
 if __name__ == '__main__':
     x = new_device(angle=(0, 180, 270),
                    length=(100, 100, 100),

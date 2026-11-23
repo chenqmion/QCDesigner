@@ -1,9 +1,6 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -14,10 +11,11 @@ from class_device import device
 from class_chip import chip
 import aux_poly
 
-#%% dependence
+# %% dependence
 import squid_1 as SQUID
 
-#%% design
+
+# %% design
 def new_device(zone=(10, 10), squid_height=2, squid_width=6,
                contact_gap=0.5, protection_gap=1.5,
                nanowire_width=0.2, nanowire_extension=1,
@@ -64,14 +62,16 @@ def new_device(zone=(10, 10), squid_height=2, squid_width=6,
 
     return probe
 
-#%% example
-x = new_device()
 
-chip_1 = chip(name=device_name,
-              time=time_stamp,
-              logo='QCD',
-              die_size=(15e3, 15e3),
-              chip_size=(10e3, 10e3),
-              trap_size=(20, 100))
-chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='center')
-chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+# %% example
+if __name__ == '__main__':
+    x = new_device()
+
+    chip_1 = chip(name=device_name,
+                  time=time_stamp,
+                  logo='QCD',
+                  die_size=(15e3, 15e3),
+                  chip_size=(10e3, 10e3),
+                  trap_size=(20, 100))
+    chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='center')
+    chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)

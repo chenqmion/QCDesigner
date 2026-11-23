@@ -1,9 +1,8 @@
-import numpy as np
-import scipy as sci
-
 import datetime
-import sys
 import os
+import sys
+
+import numpy as np
 
 today = str(datetime.date.today()).split('-')
 time_stamp = today[0][-2:] + today[1] + today[2]
@@ -12,12 +11,12 @@ device_name = os.path.basename(__file__)[:-3]
 sys.path.append('../')
 from class_device import device, handshake
 from class_chip import chip
-import aux_poly
 
-#%% dependence
+# %% dependence
 import cross_1 as cross
 
-#%% design
+
+# %% design
 def new_device(gnd_size=[300, 300],
                cap_size=[10, 10],
                protection_gap=10,
@@ -55,7 +54,7 @@ def new_device(gnd_size=[300, 300],
     cap_gnd.add_geometry('SiO2', [poly_1], ref=1j * (cap_size[1] + 2 * protection_gap))
     # cap.ports['bottom_'] = cap.ports['top_'] + (branch + protection_gap - a/2 - b)/2 - 1j*gnd_size[1]
     cap.ports['bottom_'] = handshake(x=cap_top_ports['270'].x - 1j * gnd_size[1],
-                                     angle=0)
+                                     angle=270)
 
     # if gnd_size[0] == 0:
     #     gnd_size[0] = gnd_size[1]
@@ -89,41 +88,43 @@ def new_device(gnd_size=[300, 300],
 
     return cap
 
-#%% example
-x = new_device(gnd_size=[0, 5])
 
-chip_1 = chip(name=device_name,
-              time=time_stamp,
-              logo='QCD',
-              die_size=(15e3, 15e3),
-              chip_size=(10e3, 10e3),
-              trap_size=(20, 100))
-chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='top')
-chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
+# %% example
+if __name__ == '__main__':
+    x = new_device(gnd_size=[0, 5])
 
-# x0 = r - (a / 2 + b)
-# x1 = r - a/2
-# x2 = r + a/2
-# x3 = r + (a / 2 + b)
-#
-# y0 = r - (cap_size[1] / 2 + protection_gap)
-# y1 = r - cap_size[1] / 2
-# y2 = r + cap_size[1] / 2
-# y3 = r + (cap_size[1] / 2 + protection_gap)
-#
-# theta_list = np.arange(np.pi, np.pi*3/2, d_rad)
-# if not(np.pi*3/2 in theta_list):
-#     theta_list = np.append(theta_list, np.pi*3/2)
-#
-# path_1 = r + x0 * np.cos(theta_list) + 1j*y0 * np.sin(theta_list)
-# path_2 = r + x1 * np.cos(theta_list) + 1j*y1 * np.sin(theta_list)
-# path_3 = r + x2 * np.cos(theta_list) + 1j*y2 * np.sin(theta_list)
-# path_4 = r + x3 * np.cos(theta_list) + 1j*y3 * np.sin(theta_list)
-#
-# poly_1 = list(path_1) + list(path_2[::-1])
-# poly_2 = list(path_3) + list(path_4[::-1])
-#
-# cpw_top = device()
-# cpw_top.add_geometry(layer, [poly_1, poly_2])
+    chip_1 = chip(name=device_name,
+                  time=time_stamp,
+                  logo='QCD',
+                  die_size=(15e3, 15e3),
+                  chip_size=(10e3, 10e3),
+                  trap_size=(20, 100))
+    chip_1.combine_device(x, ref=5e3 * (1 + 1j), degree=0, axis='none', port='top')
+    chip_1.gen_gds(marker=True, flux_trap=True, set_zero=True)
 
-# cpw_top.add_port('1', 0)
+    # x0 = r - (a / 2 + b)
+    # x1 = r - a/2
+    # x2 = r + a/2
+    # x3 = r + (a / 2 + b)
+    #
+    # y0 = r - (cap_size[1] / 2 + protection_gap)
+    # y1 = r - cap_size[1] / 2
+    # y2 = r + cap_size[1] / 2
+    # y3 = r + (cap_size[1] / 2 + protection_gap)
+    #
+    # theta_list = np.arange(np.pi, np.pi*3/2, d_rad)
+    # if not(np.pi*3/2 in theta_list):
+    #     theta_list = np.append(theta_list, np.pi*3/2)
+    #
+    # path_1 = r + x0 * np.cos(theta_list) + 1j*y0 * np.sin(theta_list)
+    # path_2 = r + x1 * np.cos(theta_list) + 1j*y1 * np.sin(theta_list)
+    # path_3 = r + x2 * np.cos(theta_list) + 1j*y2 * np.sin(theta_list)
+    # path_4 = r + x3 * np.cos(theta_list) + 1j*y3 * np.sin(theta_list)
+    #
+    # poly_1 = list(path_1) + list(path_2[::-1])
+    # poly_2 = list(path_3) + list(path_4[::-1])
+    #
+    # cpw_top = device()
+    # cpw_top.add_geometry(layer, [poly_1, poly_2])
+
+    # cpw_top.add_port('1', 0)
