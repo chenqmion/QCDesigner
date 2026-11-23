@@ -106,7 +106,7 @@ def new_device(
     path.append(path[-1] - purcell_width_1)
     path.append(path[-1] + 1j * (meander_height[0] + meander_gap + r))
     cpw_1b = cpw.new_device(path, a=a, b=b, r=r, d_rad=d_rad, layer=layer)
-    cpw_1b_ports = cpw_1.combine_device(cpw_1b, ref=cpw_2_ports['1'] + meander_gap, degree=180, axis='none', port='2')
+    cpw_1b_ports = cpw_1.combine_device(cpw_1b, ref=cpw_2_ports['1'].x + meander_gap, degree=180, axis='none', port='2')
     cross_1b_ports = cpw_1.combine_device(cross_1, ref=cpw_1b_ports['2'], degree=0, axis='y', port='90')
 
     cpw_2b = lambda4.new_device(length=purcell_length[0] - purcell_length[1] - purcell_length[2],
@@ -175,7 +175,7 @@ def new_device(
     )
 
     # bolometer_1_ports = cpw_1.combine_device(bolometer_1, ref=cross_2b_ports['90'], degree=0, axis='x', port='1')
-    bolometer_1_ports = cpw_1.combine_device(bolometer_1, ref=cross_2b_ports['90'].real + 1j * finger_2_ports['2'].imag,
+    bolometer_1_ports = cpw_1.combine_device(bolometer_1, ref=cross_2b_ports['90'].x.real + 1j * finger_2_ports['2'].x.imag,
                                              degree=0, axis='x', port='2')
 
     return cpw_1

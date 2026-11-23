@@ -54,7 +54,7 @@ def new_device(
         w_electrode=w_electrode
     )
 
-    sns_1.add_port('1', sns_1.ports['90'])
+    sns_1.ports['1'] = sns_1.ports['90']
 
     # capacitor
     cap_1 = capacitor_cross.new_device(

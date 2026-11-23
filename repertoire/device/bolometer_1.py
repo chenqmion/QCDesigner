@@ -56,7 +56,7 @@ def new_device(
         w_electrode=w_electrode
     )
 
-    sns_1.add_port('1', sns_1.ports['90'])
+    sns_1.ports['1'] = sns_1.ports['90']
 
     # pad 1
     sns_taper_1 = taper.new_device(length=pad_length[1],
@@ -81,7 +81,7 @@ def new_device(
     poly_1.append(poly_1[-1] + pad_gap[0][1])
     poly_1.append(poly_1[-1] + 1j * (pad_width[0][1] + 2 * pad_gap[0][1]))
     poly_1.append(poly_1[-1] - pad_gap[0][1])
-    cpw_1.add_geometry('Nb_inv', [poly_1], ref=cpw_1.ports['2'] - 1j * (pad_width[0][1] + 2 * pad_gap[0][1]) / 2)
+    cpw_1.add_geometry('Nb_inv', [poly_1], ref=cpw_1.ports['2'].x - 1j * (pad_width[0][1] + 2 * pad_gap[0][1]) / 2)
 
     cpw_taper_1_ports = sns_taper_1.combine_device(cpw_1, ref=sns_taper_1.ports['2'], degree=0, axis='none', port='1')
     sns_taper_1.ports['2'] = cpw_taper_1_ports['2']
@@ -110,22 +110,22 @@ def new_device(
     poly_1.append(poly_1[-1] + pad_gap[1][1])
     poly_1.append(poly_1[-1] + 1j * (pad_width[1][1] + 2 * pad_gap[1][1]))
     poly_1.append(poly_1[-1] - pad_gap[1][1])
-    cpw_2.add_geometry('Nb_inv', [poly_1], ref=cpw_2.ports['2'] - 1j * (pad_width[1][1] + 2 * pad_gap[1][1]) / 2)
+    cpw_2.add_geometry('Nb_inv', [poly_1], ref=cpw_2.ports['2'].x - 1j * (pad_width[1][1] + 2 * pad_gap[1][1]) / 2)
 
     cpw_taper_2_ports = sns_taper_2.combine_device(cpw_2, ref=sns_taper_2.ports['2'], degree=0, axis='none', port='1')
     sns_taper_2.ports['2'] = cpw_taper_2_ports['2']
     sns_taper_2_ports = sns_1.combine_device(sns_taper_2,
-                                             ref=sns_taper_1_ports['2'] - 1j * (c_g[1] + pad_gap[0][1] + pad_gap[1][1]),
+                                             ref=sns_taper_1_ports['2'].x - 1j * (c_g[1] + pad_gap[0][1] + pad_gap[1][1]),
                                              degree=90, axis='none', port='2')
 
-    sns_1.add_port('2', sns_taper_2_ports['1'])
+    sns_1.ports['2'] = sns_taper_2_ports['1']
 
     # %% capacitor 2 ground
     poly_1 = [-(c_g[0] + 2 * spacer) / 2]
     poly_1.append(poly_1[-1] - 1j * (c_g[1] + spacer + spacer + pad_length[0]))
     poly_1.append(poly_1[-1] + (c_g[0] + 2 * spacer))
     poly_1.append(poly_1[-1] + 1j * (c_g[1] + spacer + spacer + pad_length[0]))
-    sns_1.add_geometry('SiO2', [poly_1], ref=sns_taper_1_ports['2'])
+    sns_1.add_geometry('SiO2', [poly_1], ref=sns_taper_1_ports['2'].x)
 
     poly_2 = [-c_g[0] / 2]
     poly_2.append(poly_2[-1] - 1j * c_g[1])
@@ -142,7 +142,7 @@ def new_device(
     poly_4.append(poly_4[-1] + c_p[0])
     poly_4.append(poly_4[-1] - 1j * (pad_gap[1][1] + c_p[1]))
 
-    sns_1.add_geometry('Patch', [poly_2, poly_3, poly_4], ref=sns_taper_1_ports['2'] - 1j * pad_gap[1][1])
+    sns_1.add_geometry('Patch', [poly_2, poly_3, poly_4], ref=sns_taper_1_ports['2'].x - 1j * pad_gap[1][1])
 
     # cpw_taper_1_ports = sns_taper_1.combine_device(cpw_1, ref=sns_taper_1.ports['2'], degree=0, axis='none', port='1')
 
