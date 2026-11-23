@@ -88,7 +88,7 @@ def new_device(length=50,
 
 #%% example
 if __name__ == '__main__':
-    x = new_device(length=50, a=10, b=6, a2=15, b2=12, form='sigmoid')
+    x = new_device(length=50, a=10, b=6, a2=15, b2=12, form='normal')
 
     chip_1 = chip(name=device_name,
                   time=time_stamp,
