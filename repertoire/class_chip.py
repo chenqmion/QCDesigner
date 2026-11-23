@@ -15,6 +15,7 @@ class chip(device):
     die_size: list[int] = field(default_factory=lambda: [15e3, 15e3])
     chip_size: list[int] = field(default_factory=lambda: [10e3, 10e3])
     trap_size: list[int] = field(default_factory=lambda: [20, 100])
+    flag_FEM: bool = False  # chip prepared for FEM simulation: no markers and no flux trap by default
 
     def __post_init__(self):
         position_list = [self.chip_size[0] / 3 + 1j*0.4e3,
@@ -108,7 +109,16 @@ class chip(device):
     #
     #     return chip_1
 
-    def gen_gds(self, marker=True, flux_trap=False, set_zero=True, merge=False):
+    def gen_gds(self, marker=None, flux_trap=None, set_zero=True, merge=False):
+        """
+        marker, flux_trap: True / False; None (default) means on, unless the chip has flag_FEM=True.
+        The flux trap is only made together with the markers.
+        """
+        if marker is None:
+            marker = not self.flag_FEM
+        if flux_trap is None:
+            flux_trap = not self.flag_FEM
+        self.route_all()
         dbu = 1e-3
         scale = 1.0 / dbu
 
@@ -154,25 +164,32 @@ class chip(device):
             top.shapes(layer_id).insert(region)
 
             if flux_trap:
-                protect += region.sized(int(round(50 * scale)))
+                protect += region
 
         # ---- flux trap 网格 ----
         if flux_trap and marker:
-            trap_ = np.array([-0.5 - 0.5j, -0.5 + 0.5j, 0.5 + 0.5j, 0.5 - 0.5j]) * self.trap_size[0]
+            # keep-out: all geometry grown by 50 um (sized once on the union of all layers)
+            protect = protect.sized(int(round(50 * scale)))
 
+            # trap squares: one square in a helper cell, repeated as an Nx x Ny array and flattened by
+            # klayout (much faster than building every square in python)
             pt_off = 650 * (1 + 1j)
             Nx = int((self.chip_size[0] - 2 * np.real(pt_off)) / self.trap_size[1]) + 1
             Ny = int((self.chip_size[1] - 2 * np.imag(pt_off)) / self.trap_size[1]) + 1
+            origin = pt_off - offset if set_zero else pt_off
+            pitch = int(round(self.trap_size[1] * scale))
+            half = int(round(self.trap_size[0] / 2 * scale))
 
-            X, Y = np.meshgrid(range(Nx), range(Ny))
-            pt_list = pt_off + self.trap_size[1] * (X + 1j * Y).flatten()
-            # if set_zero:
-            #     pt_list = pt_list - offset
-
-            trap = to_region([pt + trap_ for pt in pt_list])
-            protect.merge()
-            trap.merge()
-            trap = trap - protect
+            helper = db.Layout()
+            helper.dbu = dbu
+            unit, grid = helper.create_cell('trap_unit'), helper.create_cell('trap_grid')
+            helper_layer = helper.layer(0, 0)
+            unit.shapes(helper_layer).insert(db.Box(-half, -half, half, half))
+            grid.insert(db.CellInstArray(unit.cell_index(),
+                                         db.Trans(db.Vector(int(round(origin.real * scale)),
+                                                            int(round(origin.imag * scale)))),
+                                         db.Vector(pitch, 0), db.Vector(0, pitch), Nx, Ny))
+            trap = db.Region(grid.begin_shapes_rec(helper_layer)) - protect
 
             top.shapes(layout.layer(0, 0)).insert(trap)
 

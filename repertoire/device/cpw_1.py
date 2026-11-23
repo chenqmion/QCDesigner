@@ -96,7 +96,9 @@ def new_device(
 
 def route(start, stop, waypoints=(), a=10, b=6, r=50, straight=0, d_rad=np.pi / 36, layer='Nb_inv'):
     """
-    CPW between two ports (handshake); the path is computed by aux_route.route (see there for the rules).
+    CPW between two ports (handshake), drawn immediately and without obstacle check; the path is computed by
+    aux_route.route (see there for the rules). In a design, prefer device.route(), which avoids the
+    components already placed.
     The result is in the same coordinate frame as start/stop, i.e. combine it with ref=None, degree=0.
     """
     path = aux_route.route(start, stop, waypoints=waypoints, r=r, straight=straight)

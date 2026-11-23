@@ -35,10 +35,10 @@ def new_device(name=device_name,
                gnd_slot=250,
                # general
                a=10, b=6,
-              flag_FEM=False
+               flag_FEM=False
                ):
     chip_1 = chip(name=name, time=time, logo=logo,
-                  die_size=die_size, chip_size=chip_size, trap_size=trap_size)
+                  die_size=die_size, chip_size=chip_size, trap_size=trap_size, flag_FEM=flag_FEM)
 
     # %% base
     poly_1 = []

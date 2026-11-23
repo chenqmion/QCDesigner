@@ -14,7 +14,6 @@ from class_device import handshake
 
 # %% dependence
 import template_1 as chip_template
-import cpw_1 as cpw
 import fsg_1 as fsg
 
 # %%
@@ -43,8 +42,7 @@ chip_1 = chip_template.new_device(name='FSGx4',
 chip_size = (10e3, 10e3)
 x_0 = chip_size[0]/2 + 1j*chip_size[1]/2
 
-cpw_storage = cpw.route(chip_1.ports['launcher_0+'], chip_1.ports['launcher_0-'])
-chip_1.combine_device(cpw_storage)
+chip_1.route(chip_1.ports['launcher_0+'], chip_1.ports['launcher_0-'])
 
 # %%
 fsg_1 = fsg.new_device(length_storage=6000,
@@ -60,13 +58,11 @@ fsg_1 = fsg.new_device(length_storage=6000,
 
 ports_fsg_1 = chip_1.combine_device(fsg_1, ref=x_0.real + 30 + (a+2*b) + 1j*6e3, axis='none', port='storage')
 
-cpw_output = cpw.route(chip_1.ports['launcher_+0'], ports_fsg_1['output'], r=100)
-chip_1.combine_device(cpw_output)
+chip_1.route(chip_1.ports['launcher_+0'], ports_fsg_1['output'], r=100)
 
-cpw_qubit = cpw.route(chip_1.ports['launcher_++'],
-                      handshake(x=ports_fsg_1['qubit_90'].x + (150 + 30j), angle=90), r=100)
-cpw_qubit.terminate_port('2', width=22, gap=6)
-chip_1.combine_device(cpw_qubit)
+chip_1.route(chip_1.ports['launcher_++'],
+             handshake(x=ports_fsg_1['qubit_90'].x + (150 + 30j), angle=90),
+             r=100, terminate=dict(width=22, gap=6))
 
 # %% source 2
 fsg_2 = fsg.new_device(length_storage=6300,
@@ -82,13 +78,11 @@ fsg_2 = fsg.new_device(length_storage=6300,
 
 ports_fsg_2 = chip_1.combine_device(fsg_2, ref=x_0.real - 30 - (a+2*b) + 1j*4e3, axis='y', port='storage')
 
-cpw_output_2 = cpw.route(chip_1.ports['launcher_-0'], ports_fsg_2['output'], r=100)
-chip_1.combine_device(cpw_output_2)
+chip_1.route(chip_1.ports['launcher_-0'], ports_fsg_2['output'], r=100)
 
-cpw_qubit_2 = cpw.route(chip_1.ports['launcher_--'],
-                        handshake(x=ports_fsg_2['qubit_270'].x + (-150 - 30j), angle=270), r=100)
-cpw_qubit_2.terminate_port('2', width=22, gap=6)
-chip_1.combine_device(cpw_qubit_2)
+chip_1.route(chip_1.ports['launcher_--'],
+             handshake(x=ports_fsg_2['qubit_270'].x + (-150 - 30j), angle=270),
+             r=100, terminate=dict(width=22, gap=6))
 
 # %% source 3
 fsg_3 = fsg.new_device(length_storage=6620,
@@ -104,8 +98,7 @@ fsg_3 = fsg.new_device(length_storage=6620,
 
 ports_fsg_3 = chip_1.combine_device(fsg_3, ref=x_0.real + 30 + (a+2*b) + 1j*2e3, axis='none', port='storage')
 
-cpw_output_3 = cpw.route(chip_1.ports['launcher_+-'], ports_fsg_3['output'], r=100)
-chip_1.combine_device(cpw_output_3)
+chip_1.route(chip_1.ports['launcher_+-'], ports_fsg_3['output'], r=100)
 
 # %% source 4
 fsg_4 = fsg.new_device(length_storage=7350,
@@ -121,8 +114,7 @@ fsg_4 = fsg.new_device(length_storage=7350,
 
 ports_fsg_4 = chip_1.combine_device(fsg_4, ref=x_0.real - 30 - (a+2*b) + 1j*8e3, axis='y', port='storage')
 
-cpw_output_4 = cpw.route(chip_1.ports['launcher_-+'], ports_fsg_4['output'], r=100)
-chip_1.combine_device(cpw_output_4)
+chip_1.route(chip_1.ports['launcher_-+'], ports_fsg_4['output'], r=100)
 
 # %%
-chip_1.gen_gds(marker=not(flag_FEM), flux_trap=True, set_zero=True)
+chip_1.gen_gds(set_zero=True)
